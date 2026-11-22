@@ -1,0 +1,1 @@
+Pasta opcional para os ZIPs nacionais originais do INEP. O pacote inclui os CSVs filtrados e NÃO precisa dos ZIPs para executar o treinamento.

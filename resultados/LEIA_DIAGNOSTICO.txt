@@ -1,0 +1,16 @@
+DIAGNÓSTICO COMPLEMENTAR — RADAR DE PERMANÊNCIA ESCOLAR
+
+Fonte: dados de rendimento escolar por escola (INEP 2021-2025), fornecidos pelo usuário.
+Alvo: aumento de pelo menos 3 pontos percentuais na taxa de abandono do ensino médio.
+Conjunto de teste: 215 escolas (2024→2025); 37 casos positivos (17.2%).
+
+O relatório diagnostico_priorizacao.csv apresenta, para cada modelo, quantos casos reais
+aparecem entre as 10, 20, 30 e 50 escolas com maior escore.
+
+IMPORTANTE: esses escores não são probabilidades calibradas. A avaliação top-k foi
+calculada somente para análise exploratória do teste de 2025, não para escolher
+hiperparâmetros, limiares ou o modelo final. Não usar como ranking operacional.
+
+PRÓXIMA FASE: integrar taxas de distorção idade-série do INEP por escola (2021-2024),
+por código INEP + ano. Repetir a validação temporal e comparar desempenho com o
+mesmo teste final. Em seguida, avaliar se há ganho real em F1, recall e top-k.

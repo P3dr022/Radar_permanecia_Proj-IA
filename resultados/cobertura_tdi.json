@@ -1,0 +1,34 @@
+{
+  "2021": {
+    "escolas_estaduais_ro_no_arquivo_tdi": 373,
+    "com_tdi_em": 198,
+    "escolas_com_rendimento_em": 198,
+    "escolas_com_tdi_total_integrada": 198,
+    "escolas_com_tdi_primeira_serie_integrada": 192,
+    "sem_tdi_total_integrada": 0
+  },
+  "2022": {
+    "escolas_estaduais_ro_no_arquivo_tdi": 374,
+    "com_tdi_em": 199,
+    "escolas_com_rendimento_em": 199,
+    "escolas_com_tdi_total_integrada": 199,
+    "escolas_com_tdi_primeira_serie_integrada": 193,
+    "sem_tdi_total_integrada": 0
+  },
+  "2023": {
+    "escolas_estaduais_ro_no_arquivo_tdi": 374,
+    "com_tdi_em": 206,
+    "escolas_com_rendimento_em": 205,
+    "escolas_com_tdi_total_integrada": 205,
+    "escolas_com_tdi_primeira_serie_integrada": 200,
+    "sem_tdi_total_integrada": 0
+  },
+  "2024": {
+    "escolas_estaduais_ro_no_arquivo_tdi": 378,
+    "com_tdi_em": 217,
+    "escolas_com_rendimento_em": 217,
+    "escolas_com_tdi_total_integrada": 217,
+    "escolas_com_tdi_primeira_serie_integrada": 213,
+    "sem_tdi_total_integrada": 0
+  }
+}

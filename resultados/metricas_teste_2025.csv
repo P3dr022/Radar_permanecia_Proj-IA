@@ -1,0 +1,6 @@
+﻿modelo,limiar,n,positivos_reais,positivos_previstos,acuracia,acuracia_balanceada,precisao,recall,f1,roc_auc,tn,fp,fn,tp
+Arvore,0.5,215,37,47,0.6744,0.4822,0.1489,0.1892,0.1667,0.5049,138,40,30,7
+KNN,0.4,215,37,23,0.7674,0.517,0.2174,0.1351,0.1667,0.5304,160,18,32,5
+NaiveBayes,0.3,215,37,43,0.7116,0.5261,0.2093,0.2432,0.225,0.517,144,34,28,9
+Referencia_sempre_sem_piora,,215,37,0,0.8279,0.5,0.0,0.0,0.0,,178,0,37,0
+Referencia_sempre_com_piora,,215,37,215,0.1721,0.5,0.1721,1.0,0.2937,,0,178,0,37

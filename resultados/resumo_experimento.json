@@ -1,0 +1,251 @@
+{
+  "fonte": "INEP, Taxas de Rendimento Escolar por Escola 2021-2025 (arquivos fornecidos pelo usuário)",
+  "unidade": "escola-ano, Ensino Médio, rede estadual de Rondônia",
+  "anos_escolas_com_taxa": {
+    "2021": 198,
+    "2022": 199,
+    "2023": 205,
+    "2024": 217,
+    "2025": 221
+  },
+  "escolas_distintas": 227,
+  "transicoes": {
+    "2021": {
+      "total": 196,
+      "pioras_3pp": 69
+    },
+    "2022": {
+      "total": 198,
+      "pioras_3pp": 20
+    },
+    "2023": {
+      "total": 203,
+      "pioras_3pp": 27
+    },
+    "2024": {
+      "total": 215,
+      "pioras_3pp": 37
+    }
+  },
+  "divisao": {
+    "treino": "2021→2022 e 2022→2023",
+    "validacao": "2023→2024",
+    "teste": "2024→2025"
+  },
+  "features": [
+    "abandono_atual",
+    "reprovacao_atual",
+    "abandono_1a_atual",
+    "reprovacao_1a_atual",
+    "local_rural"
+  ],
+  "alvo": "abandono(t+1)-abandono(t) >= 3 pontos percentuais",
+  "modelos": {
+    "Arvore": {
+      "parametros": {
+        "max_depth": 4,
+        "min_samples_leaf": 10,
+        "class_weight": "balanced"
+      },
+      "limiar": 0.5,
+      "metricas_validacao": {
+        "n": 203,
+        "positivos_reais": 27,
+        "positivos_previstos": 45,
+        "acuracia": 0.803,
+        "acuracia_balanceada": 0.7139,
+        "precisao": 0.3556,
+        "recall": 0.5926,
+        "f1": 0.4444,
+        "roc_auc": 0.7484,
+        "tn": 147,
+        "fp": 29,
+        "fn": 11,
+        "tp": 16
+      },
+      "metricas_teste": {
+        "n": 215,
+        "positivos_reais": 37,
+        "positivos_previstos": 47,
+        "acuracia": 0.6744,
+        "acuracia_balanceada": 0.4822,
+        "precisao": 0.1489,
+        "recall": 0.1892,
+        "f1": 0.1667,
+        "roc_auc": 0.5049,
+        "tn": 138,
+        "fp": 40,
+        "fn": 30,
+        "tp": 7
+      }
+    },
+    "KNN": {
+      "parametros": {
+        "n_neighbors": 25,
+        "weights": "uniform",
+        "p": 1
+      },
+      "limiar": 0.4,
+      "metricas_validacao": {
+        "n": 203,
+        "positivos_reais": 27,
+        "positivos_previstos": 20,
+        "acuracia": 0.867,
+        "acuracia_balanceada": 0.6568,
+        "precisao": 0.5,
+        "recall": 0.3704,
+        "f1": 0.4255,
+        "roc_auc": 0.7014,
+        "tn": 166,
+        "fp": 10,
+        "fn": 17,
+        "tp": 10
+      },
+      "metricas_teste": {
+        "n": 215,
+        "positivos_reais": 37,
+        "positivos_previstos": 23,
+        "acuracia": 0.7674,
+        "acuracia_balanceada": 0.517,
+        "precisao": 0.2174,
+        "recall": 0.1351,
+        "f1": 0.1667,
+        "roc_auc": 0.5304,
+        "tn": 160,
+        "fp": 18,
+        "fn": 32,
+        "tp": 5
+      }
+    },
+    "NaiveBayes": {
+      "parametros": {
+        "var_smoothing": 1e-09
+      },
+      "limiar": 0.3,
+      "metricas_validacao": {
+        "n": 203,
+        "positivos_reais": 27,
+        "positivos_previstos": 30,
+        "acuracia": 0.8276,
+        "acuracia_balanceada": 0.6497,
+        "precisao": 0.3667,
+        "recall": 0.4074,
+        "f1": 0.386,
+        "roc_auc": 0.6597,
+        "tn": 157,
+        "fp": 19,
+        "fn": 16,
+        "tp": 11
+      },
+      "metricas_teste": {
+        "n": 215,
+        "positivos_reais": 37,
+        "positivos_previstos": 43,
+        "acuracia": 0.7116,
+        "acuracia_balanceada": 0.5261,
+        "precisao": 0.2093,
+        "recall": 0.2432,
+        "f1": 0.225,
+        "roc_auc": 0.517,
+        "tn": 144,
+        "fp": 34,
+        "fn": 28,
+        "tp": 9
+      }
+    }
+  },
+  "metricas_teste": [
+    {
+      "modelo": "Arvore",
+      "limiar": 0.5,
+      "n": 215,
+      "positivos_reais": 37,
+      "positivos_previstos": 47,
+      "acuracia": 0.6744,
+      "acuracia_balanceada": 0.4822,
+      "precisao": 0.1489,
+      "recall": 0.1892,
+      "f1": 0.1667,
+      "roc_auc": 0.5049,
+      "tn": 138,
+      "fp": 40,
+      "fn": 30,
+      "tp": 7
+    },
+    {
+      "modelo": "KNN",
+      "limiar": 0.4,
+      "n": 215,
+      "positivos_reais": 37,
+      "positivos_previstos": 23,
+      "acuracia": 0.7674,
+      "acuracia_balanceada": 0.517,
+      "precisao": 0.2174,
+      "recall": 0.1351,
+      "f1": 0.1667,
+      "roc_auc": 0.5304,
+      "tn": 160,
+      "fp": 18,
+      "fn": 32,
+      "tp": 5
+    },
+    {
+      "modelo": "NaiveBayes",
+      "limiar": 0.3,
+      "n": 215,
+      "positivos_reais": 37,
+      "positivos_previstos": 43,
+      "acuracia": 0.7116,
+      "acuracia_balanceada": 0.5261,
+      "precisao": 0.2093,
+      "recall": 0.2432,
+      "f1": 0.225,
+      "roc_auc": 0.517,
+      "tn": 144,
+      "fp": 34,
+      "fn": 28,
+      "tp": 9
+    },
+    {
+      "modelo": "Referencia_sempre_sem_piora",
+      "limiar": null,
+      "n": 215,
+      "positivos_reais": 37,
+      "positivos_previstos": 0,
+      "acuracia": 0.8279,
+      "acuracia_balanceada": 0.5,
+      "precisao": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "roc_auc": null,
+      "tn": 178,
+      "fp": 0,
+      "fn": 37,
+      "tp": 0
+    },
+    {
+      "modelo": "Referencia_sempre_com_piora",
+      "limiar": null,
+      "n": 215,
+      "positivos_reais": 37,
+      "positivos_previstos": 215,
+      "acuracia": 0.1721,
+      "acuracia_balanceada": 0.5,
+      "precisao": 0.1721,
+      "recall": 1.0,
+      "f1": 0.2937,
+      "roc_auc": null,
+      "tn": 0,
+      "fp": 178,
+      "fn": 0,
+      "tp": 37
+    }
+  ],
+  "limites": [
+    "Não há dados de matrículas nas planilhas de taxas por escola",
+    "Taxas de escolas pequenas podem oscilar fortemente",
+    "Amostra pequena e mudança temporal da prevalência",
+    "Probabilidades não foram calibradas",
+    "Modelos não devem ser usados como decisão automática de gestão escolar"
+  ]
+}

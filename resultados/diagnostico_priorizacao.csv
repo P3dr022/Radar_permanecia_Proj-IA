@@ -1,0 +1,13 @@
+﻿modelo,top_k,pioras_reais_no_grupo,precisao_top_k,taxa_base_teste,enriquecimento_versus_aleatorio,cobertura_dos_casos_reais
+Arvore,10,4,0.4,0.1721,2.324,0.1081
+Arvore,20,5,0.25,0.1721,1.453,0.1351
+Arvore,30,5,0.1667,0.1721,0.968,0.1351
+Arvore,50,9,0.18,0.1721,1.046,0.2432
+KNN,10,4,0.4,0.1721,2.324,0.1081
+KNN,20,5,0.25,0.1721,1.453,0.1351
+KNN,30,6,0.2,0.1721,1.162,0.1622
+KNN,50,8,0.16,0.1721,0.93,0.2162
+NaiveBayes,10,4,0.4,0.1721,2.324,0.1081
+NaiveBayes,20,5,0.25,0.1721,1.453,0.1351
+NaiveBayes,30,6,0.2,0.1721,1.162,0.1622
+NaiveBayes,50,11,0.22,0.1721,1.278,0.2973

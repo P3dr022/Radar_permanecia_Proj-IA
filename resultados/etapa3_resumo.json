@@ -1,0 +1,545 @@
+{
+  "descricao": "Comparação retrospectiva entre modelo original e modelo com taxa de distorção idade-série",
+  "fontes": [
+    "INEP Taxas de Rendimento Escolar 2021–2025",
+    "INEP Taxas de Distorção Idade-Série 2021–2024"
+  ],
+  "amostra": {
+    "transicoes": 812,
+    "treino": 394,
+    "validacao": 203,
+    "teste": 215,
+    "com_tdi_em_total": 812,
+    "com_tdi_1a": 793,
+    "positivos_por_transicao": {
+      "2021": 69,
+      "2022": 20,
+      "2023": 27,
+      "2024": 37
+    },
+    "amostra_por_transicao": {
+      "2021": 196,
+      "2022": 198,
+      "2023": 203,
+      "2024": 215
+    }
+  },
+  "variaveis": {
+    "Original": [
+      "abandono_atual",
+      "reprovacao_atual",
+      "abandono_1a_atual",
+      "reprovacao_1a_atual",
+      "local_rural"
+    ],
+    "Com_TDI": [
+      "abandono_atual",
+      "reprovacao_atual",
+      "abandono_1a_atual",
+      "reprovacao_1a_atual",
+      "local_rural",
+      "distorcao_em_atual",
+      "distorcao_1a_atual"
+    ]
+  },
+  "separacao": "Treino: 2021→2022 e 2022→2023; validação: 2023→2024; teste: 2024→2025",
+  "metrica_primaria": "F1 para classe de aumento >=3 p.p.",
+  "ajuste": "Hiperparâmetros e limiar escolhidos apenas na validação; re-treino com treino+validação; avaliação 2025 exploratória porque este período já foi analisado anteriormente",
+  "modelos": {
+    "Original_Arvore": {
+      "variaveis": [
+        "abandono_atual",
+        "reprovacao_atual",
+        "abandono_1a_atual",
+        "reprovacao_1a_atual",
+        "local_rural"
+      ],
+      "parametros": {
+        "max_depth": 4,
+        "min_samples_leaf": 10,
+        "class_weight": "balanced"
+      },
+      "limiar": 0.5,
+      "validacao": {
+        "n": 203,
+        "positivos_reais": 27,
+        "positivos_previstos": 45,
+        "acuracia": 0.803,
+        "acuracia_balanceada": 0.7139,
+        "precisao": 0.3556,
+        "recall": 0.5926,
+        "f1": 0.4444,
+        "roc_auc": 0.7484,
+        "tn": 147,
+        "fp": 29,
+        "fn": 11,
+        "tp": 16
+      },
+      "teste": {
+        "n": 215,
+        "positivos_reais": 37,
+        "positivos_previstos": 47,
+        "acuracia": 0.6744,
+        "acuracia_balanceada": 0.4822,
+        "precisao": 0.1489,
+        "recall": 0.1892,
+        "f1": 0.1667,
+        "roc_auc": 0.5049,
+        "tn": 138,
+        "fp": 40,
+        "fn": 30,
+        "tp": 7,
+        "pr_auc": 0.1972,
+        "precisao_top10": 0.4,
+        "precisao_top20": 0.25
+      }
+    },
+    "Original_KNN": {
+      "variaveis": [
+        "abandono_atual",
+        "reprovacao_atual",
+        "abandono_1a_atual",
+        "reprovacao_1a_atual",
+        "local_rural"
+      ],
+      "parametros": {
+        "n_neighbors": 25,
+        "weights": "uniform",
+        "p": 1
+      },
+      "limiar": 0.4,
+      "validacao": {
+        "n": 203,
+        "positivos_reais": 27,
+        "positivos_previstos": 20,
+        "acuracia": 0.867,
+        "acuracia_balanceada": 0.6568,
+        "precisao": 0.5,
+        "recall": 0.3704,
+        "f1": 0.4255,
+        "roc_auc": 0.7014,
+        "tn": 166,
+        "fp": 10,
+        "fn": 17,
+        "tp": 10
+      },
+      "teste": {
+        "n": 215,
+        "positivos_reais": 37,
+        "positivos_previstos": 23,
+        "acuracia": 0.7674,
+        "acuracia_balanceada": 0.517,
+        "precisao": 0.2174,
+        "recall": 0.1351,
+        "f1": 0.1667,
+        "roc_auc": 0.5304,
+        "tn": 160,
+        "fp": 18,
+        "fn": 32,
+        "tp": 5,
+        "pr_auc": 0.2389,
+        "precisao_top10": 0.4,
+        "precisao_top20": 0.25
+      }
+    },
+    "Original_NaiveBayes": {
+      "variaveis": [
+        "abandono_atual",
+        "reprovacao_atual",
+        "abandono_1a_atual",
+        "reprovacao_1a_atual",
+        "local_rural"
+      ],
+      "parametros": {
+        "var_smoothing": 1e-09
+      },
+      "limiar": 0.3,
+      "validacao": {
+        "n": 203,
+        "positivos_reais": 27,
+        "positivos_previstos": 30,
+        "acuracia": 0.8276,
+        "acuracia_balanceada": 0.6497,
+        "precisao": 0.3667,
+        "recall": 0.4074,
+        "f1": 0.386,
+        "roc_auc": 0.6597,
+        "tn": 157,
+        "fp": 19,
+        "fn": 16,
+        "tp": 11
+      },
+      "teste": {
+        "n": 215,
+        "positivos_reais": 37,
+        "positivos_previstos": 43,
+        "acuracia": 0.7116,
+        "acuracia_balanceada": 0.5261,
+        "precisao": 0.2093,
+        "recall": 0.2432,
+        "f1": 0.225,
+        "roc_auc": 0.517,
+        "tn": 144,
+        "fp": 34,
+        "fn": 28,
+        "tp": 9,
+        "pr_auc": 0.2201,
+        "precisao_top10": 0.4,
+        "precisao_top20": 0.25
+      }
+    },
+    "Com_TDI_Arvore": {
+      "variaveis": [
+        "abandono_atual",
+        "reprovacao_atual",
+        "abandono_1a_atual",
+        "reprovacao_1a_atual",
+        "local_rural",
+        "distorcao_em_atual",
+        "distorcao_1a_atual"
+      ],
+      "parametros": {
+        "max_depth": 2,
+        "min_samples_leaf": 30,
+        "class_weight": null
+      },
+      "limiar": 0.3,
+      "validacao": {
+        "n": 203,
+        "positivos_reais": 27,
+        "positivos_previstos": 58,
+        "acuracia": 0.7291,
+        "acuracia_balanceada": 0.6556,
+        "precisao": 0.2586,
+        "recall": 0.5556,
+        "f1": 0.3529,
+        "roc_auc": 0.6418,
+        "tn": 133,
+        "fp": 43,
+        "fn": 12,
+        "tp": 15
+      },
+      "teste": {
+        "n": 215,
+        "positivos_reais": 37,
+        "positivos_previstos": 23,
+        "acuracia": 0.7674,
+        "acuracia_balanceada": 0.517,
+        "precisao": 0.2174,
+        "recall": 0.1351,
+        "f1": 0.1667,
+        "roc_auc": 0.5774,
+        "tn": 160,
+        "fp": 18,
+        "fn": 32,
+        "tp": 5,
+        "pr_auc": 0.201,
+        "precisao_top10": 0.4,
+        "precisao_top20": 0.25
+      }
+    },
+    "Com_TDI_KNN": {
+      "variaveis": [
+        "abandono_atual",
+        "reprovacao_atual",
+        "abandono_1a_atual",
+        "reprovacao_1a_atual",
+        "local_rural",
+        "distorcao_em_atual",
+        "distorcao_1a_atual"
+      ],
+      "parametros": {
+        "n_neighbors": 25,
+        "weights": "uniform",
+        "p": 2
+      },
+      "limiar": 0.25,
+      "validacao": {
+        "n": 203,
+        "positivos_reais": 27,
+        "positivos_previstos": 35,
+        "acuracia": 0.803,
+        "acuracia_balanceada": 0.6355,
+        "precisao": 0.3143,
+        "recall": 0.4074,
+        "f1": 0.3548,
+        "roc_auc": 0.6909,
+        "tn": 152,
+        "fp": 24,
+        "fn": 16,
+        "tp": 11
+      },
+      "teste": {
+        "n": 215,
+        "positivos_reais": 37,
+        "positivos_previstos": 39,
+        "acuracia": 0.7395,
+        "acuracia_balanceada": 0.5537,
+        "precisao": 0.2564,
+        "recall": 0.2703,
+        "f1": 0.2632,
+        "roc_auc": 0.609,
+        "tn": 149,
+        "fp": 29,
+        "fn": 27,
+        "tp": 10,
+        "pr_auc": 0.2534,
+        "precisao_top10": 0.4,
+        "precisao_top20": 0.35
+      }
+    },
+    "Com_TDI_NaiveBayes": {
+      "variaveis": [
+        "abandono_atual",
+        "reprovacao_atual",
+        "abandono_1a_atual",
+        "reprovacao_1a_atual",
+        "local_rural",
+        "distorcao_em_atual",
+        "distorcao_1a_atual"
+      ],
+      "parametros": {
+        "var_smoothing": 1e-09
+      },
+      "limiar": 0.25,
+      "validacao": {
+        "n": 203,
+        "positivos_reais": 27,
+        "positivos_previstos": 31,
+        "acuracia": 0.8227,
+        "acuracia_balanceada": 0.6469,
+        "precisao": 0.3548,
+        "recall": 0.4074,
+        "f1": 0.3793,
+        "roc_auc": 0.7165,
+        "tn": 156,
+        "fp": 20,
+        "fn": 16,
+        "tp": 11
+      },
+      "teste": {
+        "n": 215,
+        "positivos_reais": 37,
+        "positivos_previstos": 46,
+        "acuracia": 0.707,
+        "acuracia_balanceada": 0.534,
+        "precisao": 0.2174,
+        "recall": 0.2703,
+        "f1": 0.241,
+        "roc_auc": 0.551,
+        "tn": 142,
+        "fp": 36,
+        "fn": 27,
+        "tp": 10,
+        "pr_auc": 0.2285,
+        "precisao_top10": 0.4,
+        "precisao_top20": 0.25
+      }
+    }
+  },
+  "resultados": [
+    {
+      "conjunto": "Original",
+      "algoritmo": "Arvore",
+      "limiar": 0.5,
+      "n": 215,
+      "positivos_reais": 37,
+      "positivos_previstos": 47,
+      "acuracia": 0.6744,
+      "acuracia_balanceada": 0.4822,
+      "precisao": 0.1489,
+      "recall": 0.1892,
+      "f1": 0.1667,
+      "roc_auc": 0.5049,
+      "tn": 138,
+      "fp": 40,
+      "fn": 30,
+      "tp": 7,
+      "pr_auc": 0.1972,
+      "precisao_top10": 0.4,
+      "precisao_top20": 0.25
+    },
+    {
+      "conjunto": "Original",
+      "algoritmo": "KNN",
+      "limiar": 0.4,
+      "n": 215,
+      "positivos_reais": 37,
+      "positivos_previstos": 23,
+      "acuracia": 0.7674,
+      "acuracia_balanceada": 0.517,
+      "precisao": 0.2174,
+      "recall": 0.1351,
+      "f1": 0.1667,
+      "roc_auc": 0.5304,
+      "tn": 160,
+      "fp": 18,
+      "fn": 32,
+      "tp": 5,
+      "pr_auc": 0.2389,
+      "precisao_top10": 0.4,
+      "precisao_top20": 0.25
+    },
+    {
+      "conjunto": "Original",
+      "algoritmo": "NaiveBayes",
+      "limiar": 0.3,
+      "n": 215,
+      "positivos_reais": 37,
+      "positivos_previstos": 43,
+      "acuracia": 0.7116,
+      "acuracia_balanceada": 0.5261,
+      "precisao": 0.2093,
+      "recall": 0.2432,
+      "f1": 0.225,
+      "roc_auc": 0.517,
+      "tn": 144,
+      "fp": 34,
+      "fn": 28,
+      "tp": 9,
+      "pr_auc": 0.2201,
+      "precisao_top10": 0.4,
+      "precisao_top20": 0.25
+    },
+    {
+      "conjunto": "Com_TDI",
+      "algoritmo": "Arvore",
+      "limiar": 0.3,
+      "n": 215,
+      "positivos_reais": 37,
+      "positivos_previstos": 23,
+      "acuracia": 0.7674,
+      "acuracia_balanceada": 0.517,
+      "precisao": 0.2174,
+      "recall": 0.1351,
+      "f1": 0.1667,
+      "roc_auc": 0.5774,
+      "tn": 160,
+      "fp": 18,
+      "fn": 32,
+      "tp": 5,
+      "pr_auc": 0.201,
+      "precisao_top10": 0.4,
+      "precisao_top20": 0.25
+    },
+    {
+      "conjunto": "Com_TDI",
+      "algoritmo": "KNN",
+      "limiar": 0.25,
+      "n": 215,
+      "positivos_reais": 37,
+      "positivos_previstos": 39,
+      "acuracia": 0.7395,
+      "acuracia_balanceada": 0.5537,
+      "precisao": 0.2564,
+      "recall": 0.2703,
+      "f1": 0.2632,
+      "roc_auc": 0.609,
+      "tn": 149,
+      "fp": 29,
+      "fn": 27,
+      "tp": 10,
+      "pr_auc": 0.2534,
+      "precisao_top10": 0.4,
+      "precisao_top20": 0.35
+    },
+    {
+      "conjunto": "Com_TDI",
+      "algoritmo": "NaiveBayes",
+      "limiar": 0.25,
+      "n": 215,
+      "positivos_reais": 37,
+      "positivos_previstos": 46,
+      "acuracia": 0.707,
+      "acuracia_balanceada": 0.534,
+      "precisao": 0.2174,
+      "recall": 0.2703,
+      "f1": 0.241,
+      "roc_auc": 0.551,
+      "tn": 142,
+      "fp": 36,
+      "fn": 27,
+      "tp": 10,
+      "pr_auc": 0.2285,
+      "precisao_top10": 0.4,
+      "precisao_top20": 0.25
+    }
+  ],
+  "comparacoes": [
+    {
+      "algoritmo": "Arvore",
+      "delta_f1": 0.0,
+      "delta_recall": -0.0541,
+      "delta_roc_auc": 0.0725,
+      "delta_precisao_top10": 0.0,
+      "ic95_delta_f1_bootstrap": [
+        -0.0773,
+        0.0682
+      ]
+    },
+    {
+      "algoritmo": "KNN",
+      "delta_f1": 0.0965,
+      "delta_recall": 0.1352,
+      "delta_roc_auc": 0.0786,
+      "delta_precisao_top10": 0.0,
+      "ic95_delta_f1_bootstrap": [
+        -0.0066,
+        0.2036
+      ]
+    },
+    {
+      "algoritmo": "NaiveBayes",
+      "delta_f1": 0.016,
+      "delta_recall": 0.0271,
+      "delta_roc_auc": 0.034,
+      "delta_precisao_top10": 0.0,
+      "ic95_delta_f1_bootstrap": [
+        -0.0183,
+        0.0686
+      ]
+    }
+  ],
+  "referencias_constantes": {
+    "Sempre_sem_piora": {
+      "n": 215,
+      "positivos_reais": 37,
+      "positivos_previstos": 0,
+      "acuracia": 0.8279,
+      "acuracia_balanceada": 0.5,
+      "precisao": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "roc_auc": null,
+      "tn": 178,
+      "fp": 0,
+      "fn": 37,
+      "tp": 0
+    },
+    "Sempre_com_piora": {
+      "n": 215,
+      "positivos_reais": 37,
+      "positivos_previstos": 215,
+      "acuracia": 0.1721,
+      "acuracia_balanceada": 0.5,
+      "precisao": 0.1721,
+      "recall": 1.0,
+      "f1": 0.2937,
+      "roc_auc": null,
+      "tn": 0,
+      "fp": 178,
+      "fn": 0,
+      "tp": 37
+    }
+  },
+  "cuidados": [
+    "Modelos avaliam associação e previsão, não causalidade",
+    "As probabilidades não estão calibradas",
+    "Pós-pandemia e mudança temporal na prevalência podem afetar generalização",
+    "Sem matrículas por escola: taxas de escolas pequenas podem oscilar muito",
+    "Não escolher novo modelo ou limiar com base no teste de 2025",
+    "O período de 2025 já foi examinado no experimento anterior: resultados ampliados são exploratórios, não validação cega independente",
+    "Indicadores de 2024 só estarão disponíveis após coleta/publicação; não há alerta em tempo real",
+    "Amostra limitada à rede estadual de Ensino Médio de Rondônia"
+  ]
+}

@@ -1,0 +1,4 @@
+﻿algoritmo,delta_f1,delta_recall,delta_roc_auc,delta_precisao_top10,ic95_delta_f1_bootstrap
+Arvore,0.0,-0.0541,0.0725,0.0,"[-0.0773, 0.0682]"
+KNN,0.0965,0.1352,0.0786,0.0,"[-0.0066, 0.2036]"
+NaiveBayes,0.016,0.0271,0.034,0.0,"[-0.0183, 0.0686]"
