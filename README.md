@@ -1,6 +1,6 @@
 # Radar de Permanência Escolar — distorção idade-série, porte escolar e evasão
 
-**Projeto real, reproduzível e enxuto para VS Code / Python.**
+**Projeto idealizado pelos dicentes Thelio de Sousa, Walace Cardoso, Pedro Sampaio.**
 
 **Perguntas de pesquisa:**
 
