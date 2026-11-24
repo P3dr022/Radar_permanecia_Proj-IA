@@ -1,0 +1,35 @@
+{
+  "2021": {
+    "escolas_estaduais_ro_no_censo": 422,
+    "com_matriculas_em_maior_que_zero": 198,
+    "escolas_com_rendimento_em": 198,
+    "com_porte_em_integrado": 198,
+    "com_porte_bas_integrado": 198,
+    "sem_porte_integrado": 0
+  },
+  "2022": {
+    "escolas_estaduais_ro_no_censo": 424,
+    "com_matriculas_em_maior_que_zero": 199,
+    "escolas_com_rendimento_em": 199,
+    "com_porte_em_integrado": 199,
+    "com_porte_bas_integrado": 199,
+    "sem_porte_integrado": 0
+  },
+  "2023": {
+    "escolas_estaduais_ro_no_censo": 416,
+    "com_matriculas_em_maior_que_zero": 206,
+    "escolas_com_rendimento_em": 205,
+    "com_porte_em_integrado": 205,
+    "com_porte_bas_integrado": 205,
+    "sem_porte_integrado": 0
+  },
+  "2024": {
+    "escolas_estaduais_ro_no_censo": 416,
+    "com_matriculas_em_maior_que_zero": 217,
+    "escolas_com_rendimento_em": 217,
+    "com_porte_em_integrado": 217,
+    "com_porte_bas_integrado": 217,
+    "sem_porte_integrado": 0
+  },
+  "observacao": "Atributos de porte vêm do Censo do ano-base da transição; o recorte de rendimento de 2025 só fornece o alvo."
+}

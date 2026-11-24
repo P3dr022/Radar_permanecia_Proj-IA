@@ -1,0 +1,7 @@
+﻿algoritmo,conjunto_porte,referencia,delta_f1,delta_recall,delta_roc_auc,delta_precisao_top20,ic95_delta_f1_bootstrap
+Arvore,Com_TDI_Porte_log,Original,0.0525,0.027,0.0884,0.0,"[-0.0491, 0.1683]"
+Arvore,Com_TDI_Porte_log,Com_TDI,0.0525,0.0811,0.0159,0.0,"[-0.0258, 0.1503]"
+KNN,Com_TDI_Porte_log,Original,0.058,0.1352,0.0426,-0.05,"[-0.0618, 0.1921]"
+KNN,Com_TDI_Porte_log,Com_TDI,-0.0385,0.0,-0.036,-0.15,"[-0.1557, 0.0887]"
+NaiveBayes,Com_TDI_Porte_log,Original,0.0677,0.0811,-0.0159,0.0,"[-0.0216, 0.1656]"
+NaiveBayes,Com_TDI_Porte_log,Com_TDI,0.0517,0.054,-0.0499,0.0,"[-0.0271, 0.1389]"
