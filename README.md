@@ -6,7 +6,7 @@
 
 1. Dados públicos do INEP ajudam a identificar escolas estaduais de Ensino Médio de Rondônia com aumento de **pelo menos 3 pontos percentuais** na taxa de abandono no ano seguinte? (Etapas 2 a 4)
 2. Qual é a **taxa de evasão escolar** dessas escolas, medida entre anos letivos? (Etapa 5)
-3. Esses mesmos indicadores conseguem **prever** quais escolas terão mais evasão? (Etapa 6)
+3. Esses mesmos indicadores conseguem **prever** quais escolas terão mais evasão? (Etapas 6 e 10)
 
 **Dados utilizados:** Taxas de Rendimento Escolar por Escola (2021–2025), Taxas de Distorção Idade-Série por Escola (2021–2024) e Microdados do Censo Escolar da Educação Básica (2021–2024), todos do INEP.
 
@@ -76,6 +76,29 @@ Dois alvos foram testados. O principal é **estar no quartil de maior evasão do
 - Os modelos atingem o F1 **marcando positivos em excesso**: de 62% a 92% das escolas, contra 25% de positivos reais. A precisão fica entre 0,27 e 0,32, praticamente na prevalência.
 - O que sobra de real é um **sinal fraco de ordenação**: os melhores modelos ficam entre 0,58 e 0,62 de ROC-AUC, acima do acaso, mas o conjunto todo vai de 0,51 a 0,62 e nenhum chega perto do necessário para uso operacional.
 
+### Etapas 9 e 10 — evasão e previsão no país inteiro
+
+A Etapa 6 respondeu à pergunta de previsão com 169 escolas de Rondônia e divisão temporal. As Etapas 9 e 10 refazem a pergunta com a base nacional e **validação geográfica**, que é o desenho mais exigente que os dados permitem.
+
+A evasão foi calculada para **19.109 escolas** na transição 2023→2024, a única em que a matrícula por série existe no Censo nos dois anos. A evasão agregada do país foi de **4,51%**, com variação grande entre redes: Mato Grosso em 13,55%, Rondônia em 7,93% e São Paulo em **−3,53%**.
+
+O valor negativo de São Paulo não é erro de conta: há escolas que terminaram com duas a três vezes a coorte esperada porque **absorveram alunos de outras que fecharam**. Isso levou a duas decisões no treino: escolas que terminam com mais de uma vez e meia a coorte esperada são descartadas, e o alvo passou a ser **relativo ao próprio estado** (quartil de maior evasão dentro da UF), o que neutraliza diferenças de política entre redes e mantém a prevalência em 25% em todo lugar. Sem isso o modelo aprenderia a distinguir São Paulo de Mato Grosso, não a reconhecer evasão.
+
+**Partição por estado**, sem nenhuma sobreposição: 15 UFs treinam, cinco validam (MG, SC, CE, ES, MA) e sete são reservadas para a avaliação final (RO, MT, PE, RS, GO, PB, AM). Nenhuma escola dos estados de teste participa de qualquer escolha de parâmetro ou limiar. São 9.937 escolas de treino e 3.873 de teste, com 35 atributos por escola.
+
+| Modelo | F1 | ROC-AUC | Diferença para o chute trivial | Supera? |
+|---|---:|---:|---|:--:|
+| Árvore de Decisão | 0,4375 | 0,6381 | +0,0359 · IC95 [+0,0167; +0,0551] | **sim** |
+| KNN | 0,4317 | **0,6492** | +0,0301 · IC95 [+0,0098; +0,0494] | **sim** |
+| Gaussian Naive Bayes | 0,4156 | 0,6158 | +0,0140 · IC95 [-0,0059; +0,0342] | não |
+
+- **Este é o primeiro resultado positivo e estatisticamente consistente do projeto.** Árvore e KNN superam o chute trivial (F1 de 0,4016) com intervalo de confiança inteiramente acima de zero, em estados que os modelos nunca viram.
+- O ROC-AUC do KNN é de **0,6492**, intervalo [0,6297; 0,6683], claramente acima do acaso. Os indicadores do INEP **contêm** informação sobre evasão.
+- O desempenho varia bastante entre estados: ROC-AUC de 0,7512 em Goiás e 0,5918 em Pernambuco. Em Rondônia fica em 0,6084, perto da média.
+- A regra do abandono, que um gestor usaria sem modelo, alcança F1 de 0,2278 e ROC-AUC de 0,4711, abaixo do acaso.
+
+**O que mudou em relação às etapas anteriores.** Três coisas ao mesmo tempo: o volume saltou de centenas para dezenas de milhares de escolas, o alvo deixou de depender de reconstrução e passou a ser medido pelo Censo, e a busca de hiperparâmetros ficou muito mais larga. O ganho é real, mas modesto em termos práticos: a precisão do melhor modelo fica em 0,34 contra uma prevalência de 0,25, ou seja, entre as escolas apontadas uma em cada três de fato está no quartil crítico. **Continua insuficiente para decisão administrativa sobre uma escola específica**, e serve para priorizar listas, não para rotular escolas.
+
 **Importante sobre o teste:** os resultados de 2025 já haviam sido examinados na etapa anterior, e tanto a inclusão da distorção quanto a do porte foram motivadas por essa análise. A Etapa 4 é a **terceira passada sobre o mesmo conjunto de avaliação**. Parâmetros, limiares e a forma de entrada do porte foram escolhidos apenas com a validação de 2023→2024, mas nenhuma das avaliações deve ser apresentada como validação cega independente nem como prova de generalização.
 
 ## Começar rápido
@@ -136,7 +159,7 @@ Como teste de sanidade, as 1.040 linhas de Rondônia na base nacional conferem c
 
 Além do que já era extraído, o Censo entrega **22 atributos de estrutura da escola**: matrículas em tempo integral, docentes, turmas, internet, biblioteca, laboratórios, quadra, refeitório, alimentação, água potável, esgoto, energia, banheiro, acessibilidade e equipamento multimídia. O tempo integral importa em especial porque escolas de jornada ampliada e militares concentram saída de alunos que é transferência, e não evasão.
 
-Isso abre o caminho para **treinar em um conjunto de estados e avaliar em outro**, que é a validação cega que o projeto vinha pedindo desde a Etapa 4.
+Isso abriu o caminho para **treinar em um conjunto de estados e avaliar em outro**, feito nas Etapas 9 e 10, que é a validação cega que o projeto vinha pedindo desde a Etapa 4.
 
 ### Relatório visual (Etapa 8)
 
@@ -173,6 +196,8 @@ O servidor do INEP não envia o certificado intermediário da cadeia TLS, o que 
 | `09_validar_evasao.py` | Testes do cálculo de evasão; recalcula por caminho independente |
 | `10_modelar_evasao.py` | Treina os 3 algoritmos para prever evasão e compara com referências sem modelo |
 | `11_extrair_nacional.py` | Monta a base nacional: todas as escolas estaduais de EM do país, com atributos de estrutura |
+| `12_evasao_nacional.py` | Calcula a evasão para as 27 UFs |
+| `13_treinar_nacional.py` | Treina os 3 algoritmos com busca ampla e validação entre estados |
 | `14_relatorio.py` | Gera o relatório HTML com gráficos embutidos |
 | `painel.py` | Painel de acompanhamento no terminal usado pelos scripts |
 | `executar.py` | Ponto de entrada único: monta o ambiente, mostra o menu e roda os passos |
@@ -205,6 +230,10 @@ O servidor do INEP não envia o certificado intermediário da cadeia TLS, o que 
 | `resultados/etapa6_resumo.json` | Alvos, limiares por ano, relação abandono-evasão e limitações |
 | `graficos/etapa6_previsao_evasao.png` | F1 por algoritmo e conjunto, com as duas linhas de referência |
 | `dados/nacional_integrado.csv.gz` | Base nacional: 100.705 registros escola-ano, 27 UFs (comprimida) |
+| `dados/evasao_nacional.csv.gz` | Evasão de 19.109 escolas na transição medida |
+| `resultados/etapa10_nacional.json` | Partição por estado, busca de parâmetros, métricas e intervalos |
+| `resultados/etapa10_metricas.csv` | Métricas dos três algoritmos nos estados reservados |
+| `graficos/etapa10_nacional.png` | F1 e ROC-AUC nos estados nunca vistos |
 | `resultados/cobertura_nacional.json` | Cobertura da base nacional por UF e lista de atributos novos |
 | `resultados/relatorio.html` | Relatório visual consolidado, abre no navegador |
 | `graficos/etapa3_comparacao_original_tdi.png` | Gráfico comparativo da Etapa 3 |
@@ -243,8 +272,9 @@ O servidor do INEP não envia o certificado intermediário da cadeia TLS, o que 
 7. Os intervalos bootstrap para a diferença de F1 foram calculados com as previsões fixas do teste, sem refazer treinamento; são medidas exploratórias de incerteza.
 8. Na evasão, uma transferência entre escolas aparece como evasão no nível da escola; por isso o número da rede é mais confiável que o de uma escola isolada, e alunos que migram para a EJA ou para outra rede também contam como evasão.
 9. A evasão de 2021→2022 e 2022→2023 depende de matrícula por série reconstruída e é apresentada como faixa; a correção de viés tem um único ponto de ancoragem e não sustenta valor pontual.
-10. Na Etapa 6 há uma safra por partição, o que torna a seleção de modelo instável e os intervalos largos; o alvo relativo fixa a prevalência e informa quais escolas estão no topo do ano, não quanta evasão houve.
-11. F1 isolado pode indicar melhora sem ganho informacional: o melhor resultado da Etapa 4 tem F1 maior e ROC-AUC de 0,50, porque apenas classifica mais escolas como positivas.
+10. A Etapa 10 avalia uma única transição, 2023→2024; o resultado é validado no espaço, entre estados, mas ainda não no tempo.
+11. Na Etapa 6 há uma safra por partição, o que torna a seleção de modelo instável e os intervalos largos; o alvo relativo fixa a prevalência e informa quais escolas estão no topo do ano, não quanta evasão houve.
+12. F1 isolado pode indicar melhora sem ganho informacional: o melhor resultado da Etapa 4 tem F1 maior e ROC-AUC de 0,50, porque apenas classifica mais escolas como positivas.
 
 ## Próxima decisão
 
@@ -254,7 +284,9 @@ A Etapa 6 fechou a pergunta de previsão com o alvo certo: mesmo prevendo evasã
 
 Isso fecha um resultado negativo consistente em três frentes independentes: distorção idade-série, porte escolar e agora evasão como alvo. A conclusão defensável é que **indicadores agregados anuais por escola não bastam** para antecipar, em nível de escola, quem vai perder alunos.
 
-Os próximos passos de maior retorno, nesta ordem: quando o Censo Escolar de 2025 for publicado, a transição 2024→2025 passa a ser medida e a Etapa 6 ganha uma segunda safra de teste real; e replicar o recorte em outros estados, que daria a primeira validação verdadeiramente cega do projeto.
+A Etapa 10 fechou a validação cega: com a base nacional, Árvore e KNN superam o chute trivial em sete estados nunca vistos, com intervalo acima de zero, e o ROC-AUC chega a 0,6492. A leitura correta não é que o problema foi resolvido, e sim que **o sinal existe e só aparece com volume**. Em 169 escolas ele se perde no ruído; em quase quatro mil ele se mede.
+
+Os próximos passos de maior retorno, nesta ordem: quando o Censo Escolar de 2025 for publicado, a transição 2024→2025 vira uma segunda safra medida e permite checar se o modelo se sustenta no tempo, e não apenas no espaço; separar escolas de tempo integral e militares, cuja saída de alunos é em boa parte transferência; e calibrar as probabilidades, já que hoje os escores servem para ordenar mas não valem como probabilidade.
 
 Com dois indicadores estruturais testados sem resultado operacional, a hipótese de que indicadores agregados anuais por escola bastam para antecipar piora do abandono neste recorte fica enfraquecida. Antes de buscar um terceiro indicador, o passo mais produtivo é **validação temporal adicional com outras coortes ou outras unidades da federação, sem usar o teste de 2025 para escolher modelos**, de modo a obter ao menos uma avaliação verdadeiramente cega. Se ainda houver interesse em novos atributos, candidatos plausíveis são o Indicador de Nível Socioeconômico (INSE) e a infraestrutura escolar do Censo, mas qualquer nova inclusão deve ser decidida e registrada antes de observar o resultado.
 

@@ -1,0 +1,4 @@
+﻿algoritmo,limiar,f1_validacao,auc_validacao,n,positivos_reais,positivos_previstos,acuracia,acuracia_balanceada,precisao,recall,f1,tn,fp,fn,tp,roc_auc,pr_auc,precisao_top50,precisao_top200
+Arvore,0.5,0.4693,0.6792,3873,973,1738,0.6062,0.6073,0.3412,0.6095,0.4375,1755,1145,380,593,0.6381,0.3616,0.56,0.395
+KNN,0.25,0.4745,0.7013,3873,973,1654,0.6145,0.604,0.3428,0.5827,0.4317,1813,1087,406,567,0.6492,0.3927,0.66,0.56
+NaiveBayes,0.3,0.4578,0.6694,3873,973,1669,0.6013,0.589,0.3289,0.5642,0.4156,1780,1120,424,549,0.6158,0.3392,0.32,0.325

@@ -1,0 +1,125 @@
+{
+  "transicoes": {
+    "2023->2024": {
+      "escolas": 19109,
+      "esperado": 4178653.6,
+      "observado": 3990072.0,
+      "alunos_perdidos": 188581.6,
+      "taxa_evasao": 0.0451,
+      "escolas_que_encerraram_oferta": 176
+    }
+  },
+  "por_uf_na_transicao_medida": {
+    "AC": {
+      "escolas": 118,
+      "taxa_evasao": 0.0907
+    },
+    "AL": {
+      "escolas": 226,
+      "taxa_evasao": 0.0792
+    },
+    "AM": {
+      "escolas": 380,
+      "taxa_evasao": 0.0456
+    },
+    "AP": {
+      "escolas": 103,
+      "taxa_evasao": 0.0815
+    },
+    "BA": {
+      "escolas": 907,
+      "taxa_evasao": 0.096
+    },
+    "CE": {
+      "escolas": 675,
+      "taxa_evasao": 0.0389
+    },
+    "DF": {
+      "escolas": 92,
+      "taxa_evasao": 0.1248
+    },
+    "ES": {
+      "escolas": 277,
+      "taxa_evasao": 0.1253
+    },
+    "GO": {
+      "escolas": 679,
+      "taxa_evasao": 0.0931
+    },
+    "MA": {
+      "escolas": 717,
+      "taxa_evasao": 0.065
+    },
+    "MG": {
+      "escolas": 2301,
+      "taxa_evasao": 0.051
+    },
+    "MS": {
+      "escolas": 293,
+      "taxa_evasao": 0.0798
+    },
+    "MT": {
+      "escolas": 387,
+      "taxa_evasao": 0.1355
+    },
+    "PA": {
+      "escolas": 664,
+      "taxa_evasao": 0.0296
+    },
+    "PB": {
+      "escolas": 450,
+      "taxa_evasao": 0.0377
+    },
+    "PE": {
+      "escolas": 757,
+      "taxa_evasao": 0.1064
+    },
+    "PI": {
+      "escolas": 474,
+      "taxa_evasao": 0.0841
+    },
+    "PR": {
+      "escolas": 1473,
+      "taxa_evasao": 0.046
+    },
+    "RJ": {
+      "escolas": 1102,
+      "taxa_evasao": 0.0658
+    },
+    "RN": {
+      "escolas": 305,
+      "taxa_evasao": 0.0334
+    },
+    "RO": {
+      "escolas": 169,
+      "taxa_evasao": 0.0793
+    },
+    "RR": {
+      "escolas": 123,
+      "taxa_evasao": 0.0519
+    },
+    "RS": {
+      "escolas": 1070,
+      "taxa_evasao": 0.0924
+    },
+    "SC": {
+      "escolas": 703,
+      "taxa_evasao": 0.0511
+    },
+    "SE": {
+      "escolas": 181,
+      "taxa_evasao": 0.1213
+    },
+    "SP": {
+      "escolas": 3786,
+      "taxa_evasao": -0.0353
+    },
+    "TO": {
+      "escolas": 263,
+      "taxa_evasao": 0.0678
+    }
+  },
+  "transicao_medida": "2023->2024",
+  "coorte_minima": 20,
+  "observacao": "A matrícula por série existe no Censo a partir de 2023, então só a última transição é medida; as anteriores não entram porque a base nacional não guarda matrícula por série para 2021 e 2022."
+}

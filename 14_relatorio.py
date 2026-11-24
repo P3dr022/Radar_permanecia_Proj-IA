@@ -136,6 +136,35 @@ def bloco_modelos(e6):
             +f'<div class="grafico">{imagem("etapa6_previsao_evasao.png")}</div>')
 
 
+def bloco_nacional(e10):
+    if not e10:return ('<p class="vazio">Execute 12_evasao_nacional.py e 13_treinar_nacional.py '
+                       'para gerar esta seção.</p>')
+    a=e10['amostra'];part=e10['particao']
+    comp={c['algoritmo']:c for c in e10.get('comparacoes_com_intervalo',[])}
+    linhas=[]
+    trivial=e10['referencias']['Sempre_positivo']['f1']
+    for r in sorted(e10['resultados'],key=lambda r:-float(r['roc_auc'])):
+        c=comp.get(r['algoritmo'],{})
+        ic=c.get('ic95_delta_f1_vs_trivial')
+        supera=bool(ic) and ic[0]>0
+        linhas.append({'classe':'' if supera else 'alerta','celulas':[
+            r['algoritmo'],num(r['f1']),num(r['roc_auc']),
+            f"{num(c.get('delta_f1_vs_trivial'))} <span class='ic'>IC95 [{num(ic[0])}; {num(ic[1])}]</span>" if ic else '—',
+            f"<strong>{'sim' if supera else 'não'}</strong>"]})
+    por_uf=tabela(['estado','escolas','F1','ROC-AUC'],
+        [[u['uf'],u['escolas'],num(u['f1']),num(u['roc_auc']) if u['roc_auc'] else '—']
+         for u in e10.get('por_estado_de_teste',[])],'estreita')
+    return (f'<p>Treino em <strong>{len(part["treino"])} estados</strong>, validação em '
+            f'{", ".join(part["validacao"])} e avaliação final em <strong>{", ".join(part["teste"])}</strong>, '
+            f'que não participam de nenhuma escolha. São {a["treino"]:,} escolas de treino e '
+            f'{a["teste"]:,} de teste, com {a["atributos"]} atributos.</p>'.replace(',','.')
+            +f'<p class="nota">Alvo: {e10["alvo"]}. O chute trivial alcança F1 de '
+             f'<strong>{num(trivial)}</strong>.</p>'
+            +tabela(['algoritmo','F1','ROC-AUC','diferença para o chute trivial','supera?'],linhas)
+            +'<h3>Desempenho por estado nunca visto</h3>'+por_uf
+            +f'<div class="grafico">{imagem("etapa10_nacional.png")}</div>')
+
+
 def bloco_abandono(e4):
     if not e4:return ''
     linhas=[]
@@ -184,8 +213,10 @@ def main():
     p=Painel('ETAPA 8 — RELATÓRIO VISUAL',total_etapas=2)
     p.etapa_nova('Lendo resultados')
     ev=ler_json('evasao_resumo.json');e6=ler_json('etapa6_resumo.json');e4=ler_json('etapa4_resumo.json')
+    e10=ler_json('etapa10_nacional.json')
     linhas_ev=ler_csv(DADOS/'evasao_escolas.csv')
-    for nome,obj in (('evasao_resumo.json',ev),('etapa6_resumo.json',e6),('etapa4_resumo.json',e4)):
+    for nome,obj in (('evasao_resumo.json',ev),('etapa6_resumo.json',e6),
+                     ('etapa4_resumo.json',e4),('etapa10_nacional.json',e10)):
         (p.ok if obj else p.aviso)(f'{nome}: {"lido" if obj else "ausente, seção será omitida"}')
     p.fim_etapa()
 
@@ -215,13 +246,23 @@ def main():
             cartoes+=(f'<div class="cartao"><span class="rotulo">escolas com evasão ≥ 20%</span>'
                       f'<span class="valor">{d["escolas_acima_de_20pc"]}</span>'
                       f'<span class="pe">de {d["escolas"]} escolas avaliadas</span></div>')
-    limitacoes=(ev.get('limitacoes',[]) if ev else [])+(e6.get('cuidados',[]) if e6 else [])
+    if e10:
+        comp=e10.get('comparacoes_com_intervalo',[])
+        bons=[c for c in comp if c['ic95_delta_f1_vs_trivial'][0]>0]
+        melhor=max(e10['resultados'],key=lambda r:float(r['roc_auc']))
+        cartoes+=(f'<div class="cartao"><span class="rotulo">base nacional · ROC-AUC</span>'
+                  f'<span class="valor">{num(melhor["roc_auc"],3)}</span>'
+                  f'<span class="pe">{melhor["algoritmo"]} em {len(e10["particao"]["teste"])} '
+                  f'estados nunca vistos · {len(bons)} de {len(comp)} superam o trivial</span></div>')
+    limitacoes=((ev.get('limitacoes',[]) if ev else [])+(e6.get('cuidados',[]) if e6 else [])
+                +(e10.get('cuidados',[]) if e10 else []))
     html=TEMPLATE.format(
         data=date.today().strftime('%d/%m/%Y'),
         cartoes=cartoes,
         evasao=bloco_evasao(ev),
         escolas=bloco_escolas(linhas_ev),
         modelos=bloco_modelos(e6),
+        nacional=bloco_nacional(e10),
         abandono=bloco_abandono(e4),
         limitacoes=''.join(f'<li>{x}</li>' for x in limitacoes))
     SAIDA.write_text(html,encoding='utf-8')
@@ -295,7 +336,8 @@ color:var(--suave);font-size:.84rem}}
 <main class="dentro">
 <section><h2>Evasão escolar</h2>{evasao}</section>
 <section><h2>Escolas com maior evasão</h2>{escolas}</section>
-<section><h2>Previsão de evasão</h2>{modelos}</section>
+<section><h2>Previsão de evasão com a base nacional</h2>{nacional}</section>
+<section><h2>Previsão de evasão só com Rondônia</h2>{modelos}</section>
 <section><h2>Modelos de abandono (etapas anteriores)</h2>{abandono}</section>
 <section><h2>Limitações</h2><ul class="lim">{limitacoes}</ul></section>
 </main>

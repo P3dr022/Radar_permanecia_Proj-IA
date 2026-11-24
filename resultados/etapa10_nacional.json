@@ -1,0 +1,364 @@
+{
+  "descricao": "Etapa 10: treino nacional com validação geográfica e busca ampla",
+  "alvo": "estar no quartil de maior evasão dentro do próprio estado",
+  "particao": {
+    "treino": [
+      "AC",
+      "AL",
+      "AP",
+      "BA",
+      "DF",
+      "MS",
+      "PA",
+      "PI",
+      "PR",
+      "RJ",
+      "RN",
+      "RR",
+      "SE",
+      "SP",
+      "TO"
+    ],
+    "validacao": [
+      "MG",
+      "SC",
+      "CE",
+      "ES",
+      "MA"
+    ],
+    "teste": [
+      "RO",
+      "MT",
+      "PE",
+      "RS",
+      "GO",
+      "PB",
+      "AM"
+    ]
+  },
+  "amostra": {
+    "treino": 9937,
+    "validacao": 4662,
+    "teste": 3873,
+    "atributos": 35,
+    "coorte_minima": 20,
+    "razao_maxima_observado_esperado": 1.5
+  },
+  "atributos": [
+    "abandono",
+    "reprovacao",
+    "aband_1a",
+    "reprov_1a",
+    "aband_2a",
+    "reprov_2a",
+    "aband_3a",
+    "reprov_3a",
+    "distorcao_em",
+    "distorcao_1a",
+    "distorcao_2a",
+    "distorcao_3a",
+    "log_matriculas",
+    "log_matriculas_bas",
+    "rural",
+    "alunos_por_turma",
+    "alunos_por_docente",
+    "prop_integral",
+    "in_internet",
+    "in_internet_alunos",
+    "in_biblioteca",
+    "in_biblioteca_sala_leitura",
+    "in_laboratorio_ciencias",
+    "in_laboratorio_informatica",
+    "in_quadra_esportes",
+    "in_refeitorio",
+    "in_alimentacao",
+    "in_agua_potavel",
+    "in_esgoto_rede_publica",
+    "in_energia_rede_publica",
+    "in_banheiro",
+    "in_acessibilidade_inexistente",
+    "in_equip_multimidia",
+    "in_eja",
+    "in_prof"
+  ],
+  "limiares_por_uf": {
+    "AC": 0.1482,
+    "AL": 0.1353,
+    "AM": 0.1073,
+    "AP": 0.1662,
+    "BA": 0.1689,
+    "CE": 0.0847,
+    "DF": 0.1679,
+    "ES": 0.1824,
+    "GO": 0.1844,
+    "MA": 0.1164,
+    "MG": 0.1183,
+    "MS": 0.2512,
+    "MT": 0.2747,
+    "PA": 0.1532,
+    "PB": 0.1459,
+    "PE": 0.1599,
+    "PI": 0.1409,
+    "PR": 0.1406,
+    "RJ": 0.1599,
+    "RN": 0.11,
+    "RO": 0.1597,
+    "RR": 0.1255,
+    "RS": 0.1514,
+    "SC": 0.1123,
+    "SE": 0.2059,
+    "SP": 0.1954,
+    "TO": 0.1347
+  },
+  "escolhas": {
+    "Arvore": {
+      "params": {
+        "max_depth": 12,
+        "min_samples_leaf": 150,
+        "criterion": "gini",
+        "class_weight": "balanced"
+      },
+      "limiar": 0.5,
+      "f1_validacao": 0.4693,
+      "auc_validacao": 0.6792
+    },
+    "KNN": {
+      "params": {
+        "n_neighbors": 150,
+        "weights": "distance",
+        "p": 1
+      },
+      "limiar": 0.25,
+      "f1_validacao": 0.4745,
+      "auc_validacao": 0.7013
+    },
+    "NaiveBayes": {
+      "params": {
+        "var_smoothing": 0.01
+      },
+      "limiar": 0.3,
+      "f1_validacao": 0.4578,
+      "auc_validacao": 0.6694
+    }
+  },
+  "resultados": [
+    {
+      "algoritmo": "Arvore",
+      "limiar": 0.5,
+      "f1_validacao": 0.4693,
+      "auc_validacao": 0.6792,
+      "n": 3873,
+      "positivos_reais": 973,
+      "positivos_previstos": 1738,
+      "acuracia": 0.6062,
+      "acuracia_balanceada": 0.6073,
+      "precisao": 0.3412,
+      "recall": 0.6095,
+      "f1": 0.4375,
+      "tn": 1755,
+      "fp": 1145,
+      "fn": 380,
+      "tp": 593,
+      "roc_auc": 0.6381,
+      "pr_auc": 0.3616,
+      "precisao_top50": 0.56,
+      "precisao_top200": 0.395
+    },
+    {
+      "algoritmo": "KNN",
+      "limiar": 0.25,
+      "f1_validacao": 0.4745,
+      "auc_validacao": 0.7013,
+      "n": 3873,
+      "positivos_reais": 973,
+      "positivos_previstos": 1654,
+      "acuracia": 0.6145,
+      "acuracia_balanceada": 0.604,
+      "precisao": 0.3428,
+      "recall": 0.5827,
+      "f1": 0.4317,
+      "tn": 1813,
+      "fp": 1087,
+      "fn": 406,
+      "tp": 567,
+      "roc_auc": 0.6492,
+      "pr_auc": 0.3927,
+      "precisao_top50": 0.66,
+      "precisao_top200": 0.56
+    },
+    {
+      "algoritmo": "NaiveBayes",
+      "limiar": 0.3,
+      "f1_validacao": 0.4578,
+      "auc_validacao": 0.6694,
+      "n": 3873,
+      "positivos_reais": 973,
+      "positivos_previstos": 1669,
+      "acuracia": 0.6013,
+      "acuracia_balanceada": 0.589,
+      "precisao": 0.3289,
+      "recall": 0.5642,
+      "f1": 0.4156,
+      "tn": 1780,
+      "fp": 1120,
+      "fn": 424,
+      "tp": 549,
+      "roc_auc": 0.6158,
+      "pr_auc": 0.3392,
+      "precisao_top50": 0.32,
+      "precisao_top200": 0.325
+    }
+  ],
+  "referencias": {
+    "Sempre_positivo": {
+      "n": 3873,
+      "positivos_reais": 973,
+      "positivos_previstos": 3873,
+      "acuracia": 0.2512,
+      "acuracia_balanceada": 0.5,
+      "precisao": 0.2512,
+      "recall": 1.0,
+      "f1": 0.4016,
+      "tn": 0,
+      "fp": 2900,
+      "fn": 0,
+      "tp": 973
+    },
+    "Sempre_negativo": {
+      "n": 3873,
+      "positivos_reais": 973,
+      "positivos_previstos": 0,
+      "acuracia": 0.7488,
+      "acuracia_balanceada": 0.5,
+      "precisao": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "tn": 2900,
+      "fp": 0,
+      "fn": 973,
+      "tp": 0
+    },
+    "Regra_abandono": {
+      "n": 3873,
+      "positivos_reais": 973,
+      "positivos_previstos": 994,
+      "acuracia": 0.6078,
+      "acuracia_balanceada": 0.4823,
+      "precisao": 0.2254,
+      "recall": 0.2302,
+      "f1": 0.2278,
+      "tn": 2130,
+      "fp": 770,
+      "fn": 749,
+      "tp": 224,
+      "roc_auc": 0.4711,
+      "pr_auc": 0.2385,
+      "precisao_top50": 0.22,
+      "precisao_top200": 0.24
+    }
+  },
+  "por_estado_de_teste": [
+    {
+      "uf": "RO",
+      "escolas": 167,
+      "f1": 0.3368,
+      "roc_auc": 0.6084
+    },
+    {
+      "uf": "MT",
+      "escolas": 384,
+      "f1": 0.4686,
+      "roc_auc": 0.7019
+    },
+    {
+      "uf": "PE",
+      "escolas": 757,
+      "f1": 0.4203,
+      "roc_auc": 0.5918
+    },
+    {
+      "uf": "RS",
+      "escolas": 1069,
+      "f1": 0.3527,
+      "roc_auc": 0.6272
+    },
+    {
+      "uf": "GO",
+      "escolas": 674,
+      "f1": 0.4892,
+      "roc_auc": 0.7512
+    },
+    {
+      "uf": "PB",
+      "escolas": 444,
+      "f1": 0.4855,
+      "roc_auc": 0.6706
+    },
+    {
+      "uf": "AM",
+      "escolas": 378,
+      "f1": 0.4167,
+      "roc_auc": 0.6594
+    }
+  ],
+  "comparacoes_com_intervalo": [
+    {
+      "algoritmo": "Arvore",
+      "delta_f1_vs_trivial": 0.0359,
+      "ic95_delta_f1_vs_trivial": [
+        0.0167,
+        0.0551
+      ],
+      "delta_f1_vs_regra": 0.2097,
+      "ic95_delta_f1_vs_regra": [
+        0.1765,
+        0.2449
+      ],
+      "ic95_roc_auc": [
+        0.6178,
+        0.6569
+      ]
+    },
+    {
+      "algoritmo": "KNN",
+      "delta_f1_vs_trivial": 0.0301,
+      "ic95_delta_f1_vs_trivial": [
+        0.0098,
+        0.0494
+      ],
+      "delta_f1_vs_regra": 0.2039,
+      "ic95_delta_f1_vs_regra": [
+        0.1669,
+        0.2407
+      ],
+      "ic95_roc_auc": [
+        0.6297,
+        0.6683
+      ]
+    },
+    {
+      "algoritmo": "NaiveBayes",
+      "delta_f1_vs_trivial": 0.014,
+      "ic95_delta_f1_vs_trivial": [
+        -0.0059,
+        0.0342
+      ],
+      "delta_f1_vs_regra": 0.1878,
+      "ic95_delta_f1_vs_regra": [
+        0.1514,
+        0.226
+      ],
+      "ic95_roc_auc": [
+        0.5948,
+        0.636
+      ]
+    }
+  ],
+  "cuidados": [
+    "A taxa bruta de evasão não é comparável entre redes; o alvo é relativo ao próprio estado e a prevalência fica em 25% em todo lugar",
+    "Escolas que terminaram com mais de uma vez e meia a coorte esperada foram descartadas, porque absorveram alunos de outra escola",
+    "Transferência entre escolas continua entrando como evasão no nível da escola",
+    "A avaliação usa uma única transição, 2023->2024, a única com matrícula por série nos dois anos",
+    "Estados diferentes têm políticas de rede diferentes, e o desempenho por estado varia bastante"
+  ]
+}

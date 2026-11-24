@@ -47,6 +47,8 @@ PASSOS=[
     ('validar',   '09_validar_evasao.py',        False, 'Roda os testes do cálculo de evasão'),
     ('prever',    '10_modelar_evasao.py',        False, 'Treina os modelos de evasão'),
     ('nacional',  '11_extrair_nacional.py',      True,  'Monta a base nacional (27 UFs, ~3 min)'),
+    ('ev-nac',    '12_evasao_nacional.py',       False, 'Calcula a evasão no país inteiro'),
+    ('treino-nac','13_treinar_nacional.py',      False, 'Treina os 3 algoritmos com validação entre estados'),
     ('relatorio', '14_relatorio.py',             False, 'Gera o relatório HTML'),
 ]
 ZIPS=([f'tx_rend_escolas_{a}.zip' for a in range(2021,2026)]
@@ -145,9 +147,10 @@ def menu(tem_zips):
     opcoes=[
         ('1','Rodar tudo',          [p[0] for p in PASSOS]),
         ('2','Calcular a evasão e validar', ['evasao','validar']),
-        ('3','Treinar os modelos',  ['abandono','priorizar','tdi-mod','porte-mod','prever']),
+        ('3','Treinar os modelos',  ['abandono','priorizar','tdi-mod','porte-mod','prever','ev-nac','treino-nac']),
         ('4','Gerar o relatório HTML',['relatorio']),
         ('5','Montar a base nacional (~3 min)',['nacional']),
+        ('7','Treinar com a base nacional (validação entre estados)',['ev-nac','treino-nac']),
         ('6','Só conferir o ambiente',[]),
     ]
     print()
@@ -181,13 +184,14 @@ def main():
              'evasao':['evasao','validar'],
              'relatorio':['relatorio'],
              'nacional':['nacional'],
-             'modelos':['abandono','priorizar','tdi-mod','porte-mod','prever'],
+             'modelos':['abandono','priorizar','tdi-mod','porte-mod','prever','ev-nac','treino-nac'],
+             'nacional-treino':['ev-nac','treino-nac'],
              'checar':[]}
     if len(sys.argv)>1:
         pedido=sys.argv[1].lower()
         if pedido not in atalhos:
             print(cor(f'\n  Opção desconhecida: {pedido}','vermelho'))
-            print('  Use: tudo, evasao, modelos, relatorio, nacional ou checar.')
+            print('  Use: tudo, evasao, modelos, relatorio, nacional, nacional-treino ou checar.')
             sys.exit(1)
         passos=atalhos[pedido]
     else:
