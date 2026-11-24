@@ -6,6 +6,7 @@
 
 1. Dados públicos do INEP ajudam a identificar escolas estaduais de Ensino Médio de Rondônia com aumento de **pelo menos 3 pontos percentuais** na taxa de abandono no ano seguinte? (Etapas 2 a 4)
 2. Qual é a **taxa de evasão escolar** dessas escolas, medida entre anos letivos? (Etapa 5)
+3. Esses mesmos indicadores conseguem **prever** quais escolas terão mais evasão? (Etapa 6)
 
 **Dados utilizados:** Taxas de Rendimento Escolar por Escola (2021–2025), Taxas de Distorção Idade-Série por Escola (2021–2024) e Microdados do Censo Escolar da Educação Básica (2021–2024), todos do INEP.
 
@@ -55,6 +56,25 @@ evasão         = (esperado − observado) / esperado
 - Escolas que **encerram a oferta** de Ensino Médio ficam fora da conta: a saída dos alunos é transferência, não evasão. Foram 2 escolas em 2021→2022, 1 em 2022→2023 e 2 em 2023→2024.
 - A transição **2024→2025 não é calculável**: o Censo Escolar de 2025 ainda não foi publicado.
 - O cálculo é verificado por `09_validar_evasao.py`, que recalcula a evasão de 2023→2024 por um caminho independente e confere as identidades dos dados do INEP. São 7 testes e todos passam.
+
+### Etapa 6 — prever a evasão
+
+As etapas 2 a 4 preveem aumento do **abandono**. A Etapa 6 troca o alvo pela **evasão** calculada na Etapa 5, que é o fenômeno de interesse, e usa uma divisão temporal nova: treino em 2021→2022, validação em 2022→2023 e teste em **2023→2024**, a única safra em que a evasão é medida com a matrícula por série do Censo. O ruído da reconstrução fica no alvo de treino, não no de avaliação.
+
+Dois alvos foram testados. O principal é **estar no quartil de maior evasão do próprio ano**, que mantém a prevalência fixa em 25% nas três safras e neutraliza a queda da evasão ao longo do período. O secundário é evasão de pelo menos 20%, cuja prevalência cai de 47% para 14% entre a primeira e a última safra.
+
+| Referência / modelo | F1 (quartil superior) | ROC-AUC |
+|---|---:|---:|
+| Regra do abandono (quartil superior de abandono) | 0,093 | 0,392 |
+| Chute trivial (marcar todas as escolas) | 0,406 | — |
+| Modelo escolhido na validação (KNN, com TDI e porte) | 0,424 | 0,583 |
+| Melhor do teste (Naive Bayes, com TDI e porte) | 0,460 | 0,595 |
+
+- **Contra a regra do abandono o ganho é grande e significativo:** +0,331 de F1, intervalo bootstrap de 95% em [0,184; 0,460], que não inclui zero. É o primeiro resultado estatisticamente consistente do projeto.
+- **Contra o chute trivial, não há ganho:** +0,018 de F1, com intervalo [-0,052; 0,082], que inclui zero. No alvo de 20% o quadro se repete: +0,035, intervalo [-0,017; 0,078].
+- A vantagem sobre a regra do abandono **não deve ser lida como mérito preditivo**. Abandono e evasão são negativamente relacionados em parte por construção (Spearman −0,24): a coorte esperada conta apenas aprovados e reprovados, então quem abandonou durante o ano já saiu do denominador. A correlação entre abandono e a razão coorte/matrícula é de −0,62. Escola com muito abandono chega ao ano seguinte com coorte menor e registra menos evasão adicional.
+- Os modelos atingem o F1 **marcando positivos em excesso**: de 62% a 92% das escolas, contra 25% de positivos reais. A precisão fica entre 0,27 e 0,32, praticamente na prevalência.
+- O que sobra de real é um **sinal fraco de ordenação**: os melhores modelos ficam entre 0,58 e 0,62 de ROC-AUC, acima do acaso, mas o conjunto todo vai de 0,51 a 0,62 e nenhum chega perto do necessário para uso operacional.
 
 **Importante sobre o teste:** os resultados de 2025 já haviam sido examinados na etapa anterior, e tanto a inclusão da distorção quanto a do porte foram motivadas por essa análise. A Etapa 4 é a **terceira passada sobre o mesmo conjunto de avaliação**. Parâmetros, limiares e a forma de entrada do porte foram escolhidos apenas com a validação de 2023→2024, mas nenhuma das avaliações deve ser apresentada como validação cega independente nem como prova de generalização.
 
@@ -121,6 +141,7 @@ O servidor do INEP não envia o certificado intermediário da cadeia TLS, o que 
 | `07_comparar_modelos_porte.py` | Treina os doze cenários (3 algoritmos × 4 conjuntos) e mede o efeito do porte |
 | `08_calcular_evasao.py` | Calcula a taxa de evasão inter-anual por escola, município e rede |
 | `09_validar_evasao.py` | Testes do cálculo de evasão; recalcula por caminho independente |
+| `10_modelar_evasao.py` | Treina os 3 algoritmos para prever evasão e compara com referências sem modelo |
 | `dados/ro_estaduais_em_2021_2025.csv` | Recorte de rendimento por escola |
 | `dados/tdi_ro_estaduais_2021_2024.csv` | Recorte de distorção por escola |
 | `dados/porte_ro_estaduais_2021_2024.csv` | Recorte de matrículas por escola |
@@ -143,6 +164,10 @@ O servidor do INEP não envia o certificado intermediário da cadeia TLS, o que 
 | `resultados/evasao_resumo.json` | Evasão por transição, calibração, limitações e escolas que encerraram oferta |
 | `resultados/evasao_por_municipio.csv` | Evasão agregada por município |
 | `graficos/evasao_rede_e_escolas.png` | Evasão da rede por transição e distribuição por escola |
+| `resultados/etapa6_metricas_evasao.csv` | Métricas dos 18 cenários da Etapa 6 |
+| `resultados/etapa6_comparacao_com_regra.csv` | Modelo escolhido contra a regra do abandono e o chute trivial |
+| `resultados/etapa6_resumo.json` | Alvos, limiares por ano, relação abandono-evasão e limitações |
+| `graficos/etapa6_previsao_evasao.png` | F1 por algoritmo e conjunto, com as duas linhas de referência |
 | `graficos/etapa3_comparacao_original_tdi.png` | Gráfico comparativo da Etapa 3 |
 | `graficos/etapa4_comparacao_porte.png` | Gráfico comparativo da Etapa 4 |
 | `modelos/Etapa3_*_TDI.joblib` | Modelos ajustados com TDI |
@@ -164,6 +189,8 @@ O servidor do INEP não envia o certificado intermediário da cadeia TLS, o que 
 
 **Modelos:** Árvore de Decisão, KNN e Gaussian Naive Bayes, com configurações pequenas para CPU.
 
+**Previsão de evasão (Etapa 6):** treino 2021→2022, validação 2022→2023, teste 2023→2024. Mesmos três algoritmos, em três conjuntos de atributos do ano-base. Só entram escolas com coorte esperada de ao menos 20 alunos. Além das referências triviais, o desempenho é comparado com a regra que um gestor usaria sem modelo: ordenar as escolas pelo abandono do ano-base.
+
 **Evasão (Etapa 5):** unidade escola-ano, medida por coorte das séries 2 e 3, conforme a fórmula apresentada acima. A taxa da rede é a razão entre as somas de esperado e observado, não a média das taxas das escolas, para que escolas grandes pesem proporcionalmente. Os mesmos números são calculados por município e para a rede inteira, onde as transferências internas se cancelam.
 
 ## Limitações para o artigo
@@ -177,13 +204,18 @@ O servidor do INEP não envia o certificado intermediário da cadeia TLS, o que 
 7. Os intervalos bootstrap para a diferença de F1 foram calculados com as previsões fixas do teste, sem refazer treinamento; são medidas exploratórias de incerteza.
 8. Na evasão, uma transferência entre escolas aparece como evasão no nível da escola; por isso o número da rede é mais confiável que o de uma escola isolada, e alunos que migram para a EJA ou para outra rede também contam como evasão.
 9. A evasão de 2021→2022 e 2022→2023 depende de matrícula por série reconstruída e é apresentada como faixa; a correção de viés tem um único ponto de ancoragem e não sustenta valor pontual.
-10. F1 isolado pode indicar melhora sem ganho informacional: o melhor resultado da Etapa 4 tem F1 maior e ROC-AUC de 0,50, porque apenas classifica mais escolas como positivas.
+10. Na Etapa 6 há uma safra por partição, o que torna a seleção de modelo instável e os intervalos largos; o alvo relativo fixa a prevalência e informa quais escolas estão no topo do ano, não quanta evasão houve.
+11. F1 isolado pode indicar melhora sem ganho informacional: o melhor resultado da Etapa 4 tem F1 maior e ROC-AUC de 0,50, porque apenas classifica mais escolas como positivas.
 
 ## Próxima decisão
 
 Para o prazo do seminário, o conjunto atual já permite apresentar metodologia, comparação e limitações, com dois indicadores adicionais testados e documentados — um com ganho modesto (distorção) e outro sem ganho (porte) — e com a evasão escolar calculada e verificada por testes.
 
-A evasão da Etapa 5 é hoje uma **medida**, não uma previsão. Transformá-la em alvo de modelo exigiria mais coortes: só existem três transições calculáveis e apenas uma medida diretamente, o que é pouco para treinar e validar com honestidade. Quando o Censo Escolar de 2025 for publicado, a transição 2024→2025 passa a ser medida e a série ganha um segundo ponto exato.
+A Etapa 6 fechou a pergunta de previsão com o alvo certo: mesmo prevendo evasão diretamente, e mesmo testando na safra medida pelo Censo, os indicadores do INEP não sustentam um classificador útil. Os modelos batem com folga a regra do abandono, mas não superam o chute trivial, e o que resta é um sinal fraco de ordenação (ROC-AUC de 0,51 a 0,62, conforme o algoritmo).
+
+Isso fecha um resultado negativo consistente em três frentes independentes: distorção idade-série, porte escolar e agora evasão como alvo. A conclusão defensável é que **indicadores agregados anuais por escola não bastam** para antecipar, em nível de escola, quem vai perder alunos.
+
+Os próximos passos de maior retorno, nesta ordem: quando o Censo Escolar de 2025 for publicado, a transição 2024→2025 passa a ser medida e a Etapa 6 ganha uma segunda safra de teste real; e replicar o recorte em outros estados, que daria a primeira validação verdadeiramente cega do projeto.
 
 Com dois indicadores estruturais testados sem resultado operacional, a hipótese de que indicadores agregados anuais por escola bastam para antecipar piora do abandono neste recorte fica enfraquecida. Antes de buscar um terceiro indicador, o passo mais produtivo é **validação temporal adicional com outras coortes ou outras unidades da federação, sem usar o teste de 2025 para escolher modelos**, de modo a obter ao menos uma avaliação verdadeiramente cega. Se ainda houver interesse em novos atributos, candidatos plausíveis são o Indicador de Nível Socioeconômico (INSE) e a infraestrutura escolar do Censo, mas qualquer nova inclusão deve ser decidida e registrada antes de observar o resultado.
 
