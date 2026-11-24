@@ -2,6 +2,8 @@
   "2021": {
     "escolas_estaduais_ro_no_censo": 422,
     "com_matriculas_em_maior_que_zero": 198,
+    "com_matricula_por_serie": 0,
+    "alunos_sem_serie_declarada": 0,
     "escolas_com_rendimento_em": 198,
     "com_porte_em_integrado": 198,
     "com_porte_bas_integrado": 198,
@@ -10,6 +12,8 @@
   "2022": {
     "escolas_estaduais_ro_no_censo": 424,
     "com_matriculas_em_maior_que_zero": 199,
+    "com_matricula_por_serie": 0,
+    "alunos_sem_serie_declarada": 0,
     "escolas_com_rendimento_em": 199,
     "com_porte_em_integrado": 199,
     "com_porte_bas_integrado": 199,
@@ -18,6 +22,8 @@
   "2023": {
     "escolas_estaduais_ro_no_censo": 416,
     "com_matriculas_em_maior_que_zero": 206,
+    "com_matricula_por_serie": 416,
+    "alunos_sem_serie_declarada": 110,
     "escolas_com_rendimento_em": 205,
     "com_porte_em_integrado": 205,
     "com_porte_bas_integrado": 205,
@@ -26,6 +32,8 @@
   "2024": {
     "escolas_estaduais_ro_no_censo": 416,
     "com_matriculas_em_maior_que_zero": 217,
+    "com_matricula_por_serie": 416,
+    "alunos_sem_serie_declarada": 0,
     "escolas_com_rendimento_em": 217,
     "com_porte_em_integrado": 217,
     "com_porte_bas_integrado": 217,

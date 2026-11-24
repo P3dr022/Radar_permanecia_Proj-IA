@@ -5,8 +5,10 @@ Arquivos de entrada: originais/microdados_censo_escolar_2021.zip ... _2024.zip
 O CSV integrado distribuído no pacote já permite treinar sem esses ZIPs nacionais.
 
 QT_MAT_MED vira matriculas_em e QT_MAT_BAS vira matriculas_bas; são as duas
-colunas de matrícula comparáveis nos quatro anos. O MD5 oficial que acompanha
-cada pacote é conferido antes da leitura.
+colunas de matrícula comparáveis nos quatro anos. A matrícula por série
+(m_1a, m_2a, m_3a) soma propedêutico, curso técnico e normal/magistério e só
+existe a partir do Censo 2023; nos anos anteriores fica vazia. O MD5 oficial
+que acompanha cada pacote é conferido antes da leitura.
 
 Não exige pandas; lê o CSV oficial em streaming.
 """
@@ -23,6 +25,11 @@ DADOS=ROOT/'dados'; ORIG=ROOT/'originais'; RESULT=ROOT/'resultados'
 ANOS=range(2021,2025)
 DEP_ESTADUAL='2'   # TP_DEPENDENCIA: 1 Federal, 2 Estadual, 3 Municipal, 4 Privada
 COLS={'QT_MAT_MED':'matriculas_em','QT_MAT_BAS':'matriculas_bas'}
+# A matrícula de cada série do Ensino Médio está repartida em três ofertas.
+PREFIXOS_SERIE=('QT_MAT_MED_PROP','QT_MAT_MED_CT','QT_MAT_MED_NM')
+SERIES={'m_1a':'_1','m_2a':'_2','m_3a':'_3'}
+# Alunos de Ensino Médio sem série declarada; não entram em nenhuma coorte.
+EXTRAS={'m_ns':'_NS'}
 
 
 def abrir_ano(year):
@@ -68,9 +75,23 @@ def extrair_ano(year):
         if code in linhas:
             raise ValueError(f'Código duplicado no Censo {year}: {code}')
         linhas[code]={destino:r[origem] for origem,destino in COLS.items()}
+        linhas[code].update({nome:soma_serie(r,suf) for nome,suf in {**SERIES,**EXTRAS}.items()})
     if not linhas:
         raise ValueError(f'Nenhuma escola estadual de RO encontrada em {nome}')
     return linhas
+
+
+def soma_serie(r,sufixo):
+    # Nem toda oferta tem todas as variantes: o normal/magistério, por exemplo, não
+    # tem coluna de turma sem série. Coluna ausente conta zero, desde que ao menos
+    # uma das ofertas exista; se nenhuma existir, o ano não traz esse detalhamento.
+    partes=[];presentes=0
+    for pre in PREFIXOS_SERIE:
+        v=r.get(pre+sufixo)
+        if v is None:continue
+        presentes+=1
+        partes.append(int(v) if str(v).strip().isdigit() else 0)
+    return str(sum(partes)) if presentes else ''
 
 
 def parse_qtd(value):
@@ -94,11 +115,24 @@ def main():
         do_ano=extrair_ano(year)
         porte.update({(year,code):row for code,row in do_ano.items()})
         com_em=sum(1 for r in do_ano.values() if (parse_qtd(r['matriculas_em']) or '0')!='0')
+        com_serie=sum(1 for r in do_ano.values() if r['m_1a']!='')
+        # Checagem de consistência: séries mais não seriados têm de fechar com o total da etapa.
+        nao_seriados=0
+        for code,r in do_ano.items():
+            if r['m_1a']=='' or not parse_qtd(r['matriculas_em']):continue
+            soma=sum(int(r[n]) for n in {**SERIES,**EXTRAS})
+            total=int(parse_qtd(r['matriculas_em']))
+            if soma!=total:
+                raise ValueError(f'Séries não fecham com o total em {year}/{code}: {soma} != {total}')
+            nao_seriados+=int(r['m_ns'])
         resumo[str(year)]={'escolas_estaduais_ro_no_censo':len(do_ano),
-                           'com_matriculas_em_maior_que_zero':com_em}
-        print(f'{year}: {len(do_ano)} escolas estaduais em RO no Censo; {com_em} com matrícula de Ensino Médio')
+                           'com_matriculas_em_maior_que_zero':com_em,
+                           'com_matricula_por_serie':com_serie,
+                           'alunos_sem_serie_declarada':nao_seriados}
+        print(f'{year}: {len(do_ano)} escolas estaduais em RO no Censo; {com_em} com matrícula de '
+              f'Ensino Médio; {com_serie} com matrícula por série')
 
-    cols_porte=['ano','cod_escola','matriculas_em','matriculas_bas']
+    cols_porte=['ano','cod_escola','matriculas_em','matriculas_bas']+list(SERIES)+list(EXTRAS)
     salvar_csv(DADOS/'porte_ro_estaduais_2021_2024.csv',
                [{'ano':y,'cod_escola':c,**{k:parse_qtd(r[k]) for k in cols_porte[2:]}}
                 for (y,c),r in sorted(porte.items())],cols_porte)

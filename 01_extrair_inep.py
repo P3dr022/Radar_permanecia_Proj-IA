@@ -16,11 +16,15 @@ ROOT=Path(__file__).resolve().parent
 IN_DIR=ROOT/'originais'
 OUT=ROOT/'dados'/'ro_estaduais_em_2021_2025.csv'
 NS='{http://schemas.openxmlformats.org/spreadsheetml/2006/main}'
+# Blocos de 18 colunas: aprovação começa em V, reprovação em AN e abandono em BF.
+# Dentro de cada bloco: total do Ensino Médio, depois 1ª, 2ª, 3ª e 4ª série.
 COLS={
     'A':'ano','B':'regiao','C':'uf','D':'cod_municipio','E':'municipio',
     'F':'cod_escola','G':'escola','H':'localizacao','I':'dependencia',
     'V':'aprovacao_em','AN':'reprovacao_em','BF':'abandono_em',
     'W':'aprov_1a','AO':'reprov_1a','BG':'aband_1a',
+    'X':'aprov_2a','AP':'reprov_2a','BH':'aband_2a',
+    'Y':'aprov_3a','AQ':'reprov_3a','BI':'aband_3a',
 }
 
 def value(c,strings):

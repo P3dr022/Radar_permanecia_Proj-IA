@@ -1,0 +1,135 @@
+{
+  "descricao": "Taxa de evasão inter-anual do Ensino Médio, calculada por coorte das séries 2 e 3",
+  "definicao": "Dos alunos que terminaram o ano letivo como aprovados ou reprovados e deveriam estar matriculados na 2ª ou 3ª série no ano seguinte, proporção que não aparece na matrícula. Difere do abandono do INEP, que ocorre dentro do ano letivo.",
+  "formula": "evasao = (m1*a1 + m2*(r2+a2) + m3*r3 - (m2_seguinte + m3_seguinte)) / (m1*a1 + m2*(r2+a2) + m3*r3)",
+  "fontes": [
+    "INEP Taxas de Rendimento Escolar por Escola 2021–2025",
+    "INEP Microdados do Censo Escolar da Educação Básica 2021–2024"
+  ],
+  "transicoes_calculadas": {
+    "2021->2022": {
+      "escolas": 180,
+      "esperado": 40729.4,
+      "observado": 34024.6,
+      "alunos_perdidos": 6704.8,
+      "taxa_evasao": null,
+      "metodo": "coorte_reconstruida",
+      "taxa_evasao_bruta": 0.1646,
+      "taxa_evasao_corrigida": 0.1865,
+      "faixa_estimada": [
+        0.1646,
+        0.1865
+      ],
+      "observacao": "estimada: matrícula por série reconstruída, ver faixa_estimada"
+    },
+    "2022->2023": {
+      "escolas": 180,
+      "esperado": 38349.7,
+      "observado": 33583.0,
+      "alunos_perdidos": 4766.7,
+      "taxa_evasao": null,
+      "metodo": "coorte_reconstruida",
+      "taxa_evasao_bruta": 0.1243,
+      "taxa_evasao_corrigida": 0.1409,
+      "faixa_estimada": [
+        0.1243,
+        0.1409
+      ],
+      "observacao": "estimada: matrícula por série reconstruída, ver faixa_estimada"
+    },
+    "2023->2024": {
+      "escolas": 183,
+      "esperado": 42324.5,
+      "observado": 38979.0,
+      "alunos_perdidos": 3345.5,
+      "taxa_evasao": 0.079,
+      "metodo": "coorte_censo"
+    }
+  },
+  "leitura": "A transição 2023->2024 é medida com a matrícula por série do Censo. As anteriores são estimativas: a matrícula por série foi reconstruída e o resultado é apresentado como faixa, não como valor pontual.",
+  "calibracao_coorte_reconstruida": {
+    "disponivel": true,
+    "n": 183,
+    "n_coorte_minima": 169,
+    "mae": 0.0693,
+    "mae_coorte_minima": 0.0513,
+    "vies_medio": 0.001,
+    "correlacao_pearson": 0.7894,
+    "taxa_rede_exata": 0.0808,
+    "taxa_rede_reconstruida": 0.0713,
+    "fator_correcao": 1.1332,
+    "diferenca_aditiva_pp": -0.95
+  },
+  "distribuicao_por_escola": {
+    "transicao": "2023->2024",
+    "escolas": 169,
+    "minimo": -1.0,
+    "p25": 0.0302,
+    "mediana": 0.0925,
+    "p75": 0.1595,
+    "maximo": 0.6468,
+    "escolas_acima_de_20pc": 24,
+    "escolas_com_ganho_liquido": 37
+  },
+  "escolas_que_encerraram_oferta": {
+    "2021->2022": {
+      "escolas": 2,
+      "matriculas_no_ano_base": 216,
+      "detalhe": [
+        {
+          "cod_escola": "11006773",
+          "escola": "EEEFM CORA CORALINA",
+          "matriculas_em": 212
+        },
+        {
+          "cod_escola": "11106824",
+          "escola": "EIEEFM MATINA KONDA",
+          "matriculas_em": 4
+        }
+      ]
+    },
+    "2022->2023": {
+      "escolas": 1,
+      "matriculas_no_ano_base": 3,
+      "detalhe": [
+        {
+          "cod_escola": "11048093",
+          "escola": "EIEEFM IRIA DOS REIS FREITAS",
+          "matriculas_em": 3
+        }
+      ]
+    },
+    "2023->2024": {
+      "escolas": 2,
+      "matriculas_no_ano_base": 281,
+      "detalhe": [
+        {
+          "cod_escola": "11029170",
+          "escola": "EEEFM NILSON SILVA",
+          "matriculas_em": 28
+        },
+        {
+          "cod_escola": "11048620",
+          "escola": "EEEMTI PROFESSORA CARMEM IONE DE ARAUJO",
+          "matriculas_em": 253
+        }
+      ]
+    }
+  },
+  "fracoes_de_serie_da_rede": {
+    "1a": 0.4134,
+    "2a": 0.3372,
+    "3a": 0.2494
+  },
+  "limitacoes": [
+    "Transferência entre escolas aparece como evasão no nível da escola; o número da rede é mais confiável",
+    "A matrícula por série só existe no Censo a partir de 2023; nas transições anteriores ela é reconstruída por frações e o erro dessa reconstrução está em calibracao_coorte_reconstruida",
+    "A transição 2024->2025 não é calculável: o Censo Escolar de 2025 ainda não foi publicado",
+    "A correção do viés tem um único ponto de ancoragem (2023->2024); as taxas corrigidas de 2021 e 2022 são estimativas, não medidas",
+    "A 1ª série fica fora da conta porque recebe ingressantes novos, que não são separáveis nos dados agregados",
+    "Alunos que migram para a EJA ou para outra rede contam como evasão",
+    "Escolas que encerram a oferta de Ensino Médio ficam fora da conta, porque a saída dos alunos é transferência e não evasão; elas estão listadas em escolas_que_encerraram_oferta",
+    "Alunos de Ensino Médio sem série declarada no Censo não entram em nenhuma coorte",
+    "Escolas com coorte esperada abaixo de 20 alunos têm taxa instável e ficam fora das estatísticas por escola"
+  ]
+}
