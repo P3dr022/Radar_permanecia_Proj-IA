@@ -114,6 +114,22 @@ Cada pacote do Censo tem cerca de 30 MB: desde 2021 o INEP publica apenas o arqu
 
 Para reproduzir também a extração original das taxas de rendimento, coloque os cinco ZIPs `tx_rend_escolas_2021.zip` até `tx_rend_escolas_2025.zip` em `originais/` e execute `01_extrair_inep.py` antes de `04_integrar_tdi.py`.
 
+### Base nacional (Etapa 7)
+
+As etapas 1 a 6 usam apenas Rondônia, 206 escolas. Os arquivos do INEP sempre foram nacionais e o recorte estadual era só um filtro. `11_extrair_nacional.py` lê tudo e chega a **100.705 registros escola-ano em 27 UFs**, cerca de **20 mil escolas** por ano, quase cem vezes o recorte original. A extração leva aproximadamente três minutos.
+
+Como teste de sanidade, as 1.040 linhas de Rondônia na base nacional conferem com a base local, sem nenhuma divergência nas colunas de rendimento.
+
+Além do que já era extraído, o Censo entrega **22 atributos de estrutura da escola**: matrículas em tempo integral, docentes, turmas, internet, biblioteca, laboratórios, quadra, refeitório, alimentação, água potável, esgoto, energia, banheiro, acessibilidade e equipamento multimídia. O tempo integral importa em especial porque escolas de jornada ampliada e militares concentram saída de alunos que é transferência, e não evasão.
+
+Isso abre o caminho para **treinar em um conjunto de estados e avaliar em outro**, que é a validação cega que o projeto vinha pedindo desde a Etapa 4.
+
+### Relatório visual (Etapa 8)
+
+`14_relatorio.py` consolida os resultados num arquivo HTML único, com os gráficos embutidos, que abre em qualquer navegador sem servidor. Toda métrica aparece ao lado da referência que precisa superar, e os valores estimados aparecem como faixa.
+
+Os scripts mostram o andamento no terminal por meio de `painel.py`: etapas numeradas, barra de progresso com tempo decorrido e estimativa, e tabelas de resultado. Quando a saída é redirecionada para arquivo, cores e reescrita de linha são desligadas e sobra um log limpo.
+
 ### Onde baixar os arquivos de origem
 
 Os ZIPs nacionais não vão para o repositório, por tamanho. Todos saem do portal do INEP:
@@ -142,6 +158,9 @@ O servidor do INEP não envia o certificado intermediário da cadeia TLS, o que 
 | `08_calcular_evasao.py` | Calcula a taxa de evasão inter-anual por escola, município e rede |
 | `09_validar_evasao.py` | Testes do cálculo de evasão; recalcula por caminho independente |
 | `10_modelar_evasao.py` | Treina os 3 algoritmos para prever evasão e compara com referências sem modelo |
+| `11_extrair_nacional.py` | Monta a base nacional: todas as escolas estaduais de EM do país, com atributos de estrutura |
+| `14_relatorio.py` | Gera o relatório HTML com gráficos embutidos |
+| `painel.py` | Painel de acompanhamento no terminal usado pelos scripts |
 | `dados/ro_estaduais_em_2021_2025.csv` | Recorte de rendimento por escola |
 | `dados/tdi_ro_estaduais_2021_2024.csv` | Recorte de distorção por escola |
 | `dados/porte_ro_estaduais_2021_2024.csv` | Recorte de matrículas por escola |
@@ -168,6 +187,9 @@ O servidor do INEP não envia o certificado intermediário da cadeia TLS, o que 
 | `resultados/etapa6_comparacao_com_regra.csv` | Modelo escolhido contra a regra do abandono e o chute trivial |
 | `resultados/etapa6_resumo.json` | Alvos, limiares por ano, relação abandono-evasão e limitações |
 | `graficos/etapa6_previsao_evasao.png` | F1 por algoritmo e conjunto, com as duas linhas de referência |
+| `dados/nacional_integrado.csv.gz` | Base nacional: 100.705 registros escola-ano, 27 UFs (comprimida) |
+| `resultados/cobertura_nacional.json` | Cobertura da base nacional por UF e lista de atributos novos |
+| `resultados/relatorio.html` | Relatório visual consolidado, abre no navegador |
 | `graficos/etapa3_comparacao_original_tdi.png` | Gráfico comparativo da Etapa 3 |
 | `graficos/etapa4_comparacao_porte.png` | Gráfico comparativo da Etapa 4 |
 | `modelos/Etapa3_*_TDI.joblib` | Modelos ajustados com TDI |
