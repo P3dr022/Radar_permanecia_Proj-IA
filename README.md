@@ -78,7 +78,21 @@ Dois alvos foram testados. O principal é **estar no quartil de maior evasão do
 
 **Importante sobre o teste:** os resultados de 2025 já haviam sido examinados na etapa anterior, e tanto a inclusão da distorção quanto a do porte foram motivadas por essa análise. A Etapa 4 é a **terceira passada sobre o mesmo conjunto de avaliação**. Parâmetros, limiares e a forma de entrada do porte foram escolhidos apenas com a validação de 2023→2024, mas nenhuma das avaliações deve ser apresentada como validação cega independente nem como prova de generalização.
 
-## Começar no Windows / VS Code
+## Começar rápido
+
+Quem só quer rodar deve seguir o [COMECE_AQUI.md](COMECE_AQUI.md). Em resumo:
+
+| Sistema | O que fazer |
+|---|---|
+| Windows | dois cliques em `executar.bat` |
+| Linux ou macOS | `./executar.sh` |
+| Qualquer um | `python executar.py` |
+
+O programa monta o ambiente virtual sozinho na primeira execução, instala as dependências e abre um menu com as opções (rodar tudo, calcular a evasão, treinar os modelos, gerar o relatório, montar a base nacional). Também aceita atalhos sem menu: `python executar.py tudo`, `evasao`, `modelos`, `relatorio`, `nacional` ou `checar`.
+
+Nada disso exige os ZIPs do INEP: sem eles o programa avisa e roda tudo o que depende apenas dos CSVs já versionados.
+
+## Começar no Windows / VS Code (passo a passo manual)
 
 1. Extraia o ZIP, abra a pasta `Radar_Permanencia_Dados_Reais` no VS Code.
 2. No terminal PowerShell, execute:
@@ -161,6 +175,9 @@ O servidor do INEP não envia o certificado intermediário da cadeia TLS, o que 
 | `11_extrair_nacional.py` | Monta a base nacional: todas as escolas estaduais de EM do país, com atributos de estrutura |
 | `14_relatorio.py` | Gera o relatório HTML com gráficos embutidos |
 | `painel.py` | Painel de acompanhamento no terminal usado pelos scripts |
+| `executar.py` | Ponto de entrada único: monta o ambiente, mostra o menu e roda os passos |
+| `executar.bat` / `executar.sh` | Atalhos para Windows e para Linux/macOS |
+| `COMECE_AQUI.md` | Guia curto de primeira execução, para quem não usa Python |
 | `dados/ro_estaduais_em_2021_2025.csv` | Recorte de rendimento por escola |
 | `dados/tdi_ro_estaduais_2021_2024.csv` | Recorte de distorção por escola |
 | `dados/porte_ro_estaduais_2021_2024.csv` | Recorte de matrículas por escola |
