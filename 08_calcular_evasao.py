@@ -3,27 +3,20 @@
 Executar no VS Code: python 08_calcular_evasao.py
 Usa dados/ro_rendimento_tdi_porte_integrados.csv, gerado por 06_integrar_porte.py.
 
-Abandono e evasão não são a mesma coisa. O abandono publicado pelo INEP mede
-quem deixa de frequentar DURANTE o ano letivo e continua contado na matrícula
-daquele ano. A evasão calculada aqui é INTER-ANUAL: entre os alunos que
-terminaram o ano letivo, como aprovados ou reprovados, e que deveriam seguir
-matriculados no ano seguinte, quantos não aparecem.
-
-Método de coorte, restrito às séries 2 e 3 do ano seguinte, porque só nelas o
-fluxo é fechado; ingressantes novos entram na 1ª série e contaminariam a conta.
+O abandono do INEP mede quem deixa de frequentar durante o ano letivo e segue
+contado na matrícula daquele ano. A evasão aqui é inter-anual: entre os alunos
+que terminaram o ano como aprovados ou reprovados, quantos não reaparecem no ano
+seguinte. O cálculo é por coorte e só usa as séries 2 e 3, onde o fluxo é
+fechado; ingressantes novos entram na 1ª série e contaminariam a conta.
 
     esperado(t+1)  = m1(t)*a1(t) + m2(t)*(r2(t)+a2(t)) + m3(t)*r3(t)
     observado(t+1) = m2(t+1) + m3(t+1)
     evasao         = (esperado - observado) / esperado
 
 A matrícula por série só existe no Censo a partir de 2023, então a coorte exata
-cobre apenas 2023->2024. Nas demais transições a matrícula por série é
-reconstruída do total da etapa por frações de série, e a transição 2023->2024
-serve para calibrar essa reconstrução e medir o erro que ela introduz.
-
-Uma transferência entre escolas aparece como evasão no nível da escola. Por isso
-o cálculo é feito também para a rede estadual inteira e por município, onde as
-transferências internas se cancelam e o número é mais confiável.
+cobre 2023->2024; nas demais ela é reconstruída por frações e essa transição
+serve para calibrar o erro. Transferência entre escolas aparece como evasão no
+nível da escola, por isso o cálculo também é feito por município e para a rede.
 """
 from __future__ import annotations
 import csv
@@ -61,7 +54,6 @@ def carregar():
 
 
 def fracoes_de_serie(base,anos=(2023,2024)):
-    """Fração de cada série dentro do Ensino Médio, por escola, nos anos indicados."""
     por_escola=defaultdict(list); da_rede=[]
     for ano in anos:
         for code,r in base.get(ano,{}).items():
@@ -79,7 +71,7 @@ def fracoes_de_serie(base,anos=(2023,2024)):
 
 
 def series_do_ano(r,medias,rede):
-    """Matrícula por série: a do Censo quando existe, senão reconstruída por frações."""
+    # Usa a matrícula do Censo quando existe; senão reconstrói por frações.
     observadas=[parse_float(r[s]) for s in SERIES]
     if all(np.isfinite(v) for v in observadas) and sum(observadas)>0:
         return observadas,'censo'
@@ -91,7 +83,6 @@ def series_do_ano(r,medias,rede):
 
 
 def evasao_da_transicao(a,b,medias,rede):
-    """Esperado, observado e taxa de evasão de uma escola entre t e t+1."""
     m_t,origem_t=series_do_ano(a,medias,rede)
     m_s,origem_s=series_do_ano(b,medias,rede)
     if m_t is None or m_s is None:return None
@@ -108,7 +99,7 @@ def evasao_da_transicao(a,b,medias,rede):
 
 
 def agregado(registros):
-    """Taxa da rede: razão das somas, não média das taxas."""
+    # Razão das somas, não média das taxas: escolas grandes pesam proporcionalmente.
     esp=sum(r['esperado'] for r in registros); obs=sum(r['observado'] for r in registros)
     return {'escolas':len(registros),'esperado':round(esp,1),'observado':round(obs,1),
             'alunos_perdidos':round(esp-obs,1),
@@ -161,7 +152,6 @@ def main():
     with (DADOS/'evasao_escolas.csv').open('w',encoding='utf-8-sig',newline='') as f:
         w=csv.DictWriter(f,fieldnames=cols);w.writeheader();w.writerows(linhas)
 
-    # --- Evasão da rede estadual, por transição ---
     rede_por_ano={}
     for t in sorted({l['ano_base'] for l in linhas}):
         grupo=[l for l in linhas if l['ano_base']==t]
@@ -172,7 +162,6 @@ def main():
         print(f"{t}->{t+1}: evasão da rede = {100*ag['taxa_evasao']:.2f}%  "
               f"({ag['alunos_perdidos']:.0f} de {ag['esperado']:.0f} alunos, {ag['escolas']} escolas, {ag['metodo']})")
 
-    # --- Calibração: coorte do Censo contra coorte reconstruída, em 2023->2024 ---
     calib={'disponivel':False}
     exatos=[l for l in linhas if l['ano_base']==2023 and l['metodo']=='coorte_censo']
     if exatos:
@@ -205,7 +194,6 @@ def main():
             print(f"  taxa da rede pelo Censo: {100*calib['taxa_rede_exata']:.2f}%  | "
                   f"reconstruída: {100*calib['taxa_rede_reconstruida']:.2f}%")
 
-    # --- Correção do viés nas transições reconstruídas ---
     fator=calib.get('fator_correcao')
     if fator:
         for chave,ag in rede_por_ano.items():
@@ -226,7 +214,6 @@ def main():
                 lo,hi=ag['faixa_estimada']
                 print(f"  {chave}: faixa estimada {100*lo:.1f}% a {100*hi:.1f}%")
 
-    # --- Evasão por município, só onde a coorte é grande o bastante ---
     muni={}
     for t in sorted({l['ano_base'] for l in linhas}):
         porm=defaultdict(list)
@@ -242,7 +229,6 @@ def main():
         with (RESULT/'evasao_por_municipio.csv').open('w',encoding='utf-8-sig',newline='') as f:
             w=csv.DictWriter(f,fieldnames=['municipio']+chaves);w.writeheader();w.writerows(linhas_muni)
 
-    # --- Distribuição por escola, na transição mais recente com dado do Censo ---
     foco=max({l['ano_base'] for l in linhas})
     g=[l for l in linhas if l['ano_base']==foco and l['coorte_esperada']>=MIN_COORTE]
     taxas=np.array([l['taxa_evasao'] for l in g])

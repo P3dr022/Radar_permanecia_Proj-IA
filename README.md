@@ -25,7 +25,7 @@ Base comum às duas etapas: 812 exemplos escola-ano de 2021→2022 a 2024→2025
 ### Etapa 4 — porte escolar (matrículas)
 
 - Matrículas de Ensino Médio (`QT_MAT_MED`) e totais da educação básica (`QT_MAT_BAS`) integradas por código INEP e ano, com cobertura integral: **819/819** observações escola-ano, sem ausentes. O MD5 oficial de cada pacote do Censo é conferido na extração.
-- **O porte não melhorou a previsão.** Em relação ao conjunto com distorção, a Árvore subiu 0,0525 em F1 e o Naive Bayes 0,0517, mas o KNN — melhor modelo da Etapa 3 — **caiu** 0,0385 em F1, 0,036 em ROC-AUC e 0,15 na precisão do top-20.
+- **O porte não melhorou a previsão.** Em relação ao conjunto com distorção, a Árvore subiu 0,0525 em F1 e o Naive Bayes 0,0517, mas o KNN, melhor modelo da Etapa 3, **caiu** 0,0385 em F1, 0,036 em ROC-AUC e 0,15 na precisão do top-20.
 - Todos os intervalos bootstrap de 95% para a diferença de F1 incluem zero: Árvore **[-0,0258; 0,1503]**, KNN **[-0,1557; 0,0887]**, Naive Bayes **[-0,0271; 0,1389]**.
 - O maior F1 observado, **0,2927** do Naive Bayes ampliado, continua **abaixo da referência trivial** (0,2937) e vem com ROC-AUC de **0,5011**, ou seja, ordenação equivalente ao acaso. O ganho de F1 decorre de o modelo classificar mais escolas como positivas (45 predições, 12 acertos, 33 alarmes falsos), não de maior capacidade de discriminação.
 - **Achado descritivo relevante:** escolas pequenas de fato oscilam mais. No 1º quartil de matrículas de Ensino Médio (1 a 105 alunos) a oscilação média absoluta do abandono é de **5,98 p.p.**, contra 3,78 a 4,30 p.p. nos demais quartis. Mas a correlação de Spearman entre porte e oscilação é de apenas **+0,108**, e a taxa de piora **cresce** com o porte (0,181 no 1º quartil contra 0,232 no 4º). O efeito é fraco e não monotônico, o que explica a ausência de ganho preditivo.
@@ -34,7 +34,7 @@ Base comum às duas etapas: 812 exemplos escola-ano de 2021→2022 a 2024→2025
 
 **Abandono e evasão não são a mesma coisa.** O abandono publicado pelo INEP, usado nas etapas anteriores, mede quem deixa de frequentar **durante** o ano letivo e continua contado na matrícula daquele ano. A evasão calculada aqui é **inter-anual**: entre os alunos que terminaram o ano letivo como aprovados ou reprovados e deveriam seguir matriculados no ano seguinte, a proporção que não aparece na matrícula.
 
-O cálculo é por coorte, restrito às séries 2 e 3 do ano seguinte, porque só nelas o fluxo é fechado — ingressantes novos entram na 1ª série e contaminariam a conta:
+O cálculo é por coorte, restrito às séries 2 e 3 do ano seguinte, porque só nelas o fluxo é fechado: ingressantes novos entram na 1ª série e contaminariam a conta.
 
 ```
 esperado(t+1)  = m1(t)·a1(t) + m2(t)·(r2(t)+a2(t)) + m3(t)·r3(t)
@@ -103,7 +103,7 @@ O valor negativo de São Paulo não é erro de conta: há escolas que terminaram
 
 ## Começar rápido
 
-Quem só quer rodar deve seguir o [COMECE_AQUI.md](COMECE_AQUI.md). Em resumo:
+Quem só quer rodar deve seguir o [COMECE_AQUI.md](COMECE_AQUI.md):
 
 | Sistema | O que fazer |
 |---|---|
@@ -278,7 +278,7 @@ O servidor do INEP não envia o certificado intermediário da cadeia TLS, o que 
 
 ## Próxima decisão
 
-Para o prazo do seminário, o conjunto atual já permite apresentar metodologia, comparação e limitações, com dois indicadores adicionais testados e documentados — um com ganho modesto (distorção) e outro sem ganho (porte) — e com a evasão escolar calculada e verificada por testes.
+Para o prazo do seminário, o conjunto atual já permite apresentar metodologia, comparação e limitações, com dois indicadores adicionais testados e documentados, um com ganho modesto (distorção) e outro sem ganho (porte), e com a evasão escolar calculada e verificada por testes.
 
 A Etapa 6 fechou a pergunta de previsão com o alvo certo: mesmo prevendo evasão diretamente, e mesmo testando na safra medida pelo Censo, os indicadores do INEP não sustentam um classificador útil. Os modelos batem com folga a regra do abandono, mas não superam o chute trivial, e o que resta é um sinal fraco de ordenação (ROC-AUC de 0,51 a 0,62, conforme o algoritmo).
 

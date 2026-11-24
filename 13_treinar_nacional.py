@@ -1,29 +1,19 @@
-"""Etapa 10 — treino dos três algoritmos na base nacional, com busca ampla.
+"""Etapa 10 — treino dos três algoritmos na base nacional.
 
 Executar no VS Code: python 13_treinar_nacional.py
 Usa dados/evasao_nacional.csv.gz e dados/nacional_integrado.csv.gz.
 
-Três mudanças em relação à etapa 6, todas voltadas a extrair o máximo de
-precisão que os dados permitem.
+São cerca de dezoito mil escolas com evasão medida pela matrícula por série do
+Censo, contra 169 em Rondônia na etapa 6. Os estados são repartidos em três
+grupos: a maioria treina, cinco validam e sete ficam reservados para a avaliação
+final, Rondônia entre eles. Nenhuma escola dos estados de teste participa de
+qualquer escolha de parâmetro ou limiar.
 
-Volume. São cerca de dezoito mil escolas com evasão medida pela matrícula por
-série do Censo, contra 169 em Rondônia, e o alvo não depende de reconstrução.
-
-Validação geográfica. Os estados são repartidos em três grupos: a maioria
-treina, cinco validam e sete são guardados para a avaliação final, Rondônia
-entre eles. Nenhuma escola dos estados de teste participa de qualquer escolha.
-É a validação cega que faltava ao projeto.
-
-Alvo relativo por estado. A taxa bruta não é comparável entre redes: São Paulo
-fecha a transição com evasão agregada negativa porque reorganizou a rede e há
-escolas que absorveram turmas inteiras de outras. Marcar o quartil de maior
-evasão dentro do próprio estado neutraliza esse efeito e mantém a prevalência
-em 25% em todo lugar. Escolas que terminaram com mais de uma vez e meia a
-coorte esperada são descartadas: ali houve absorção de outra escola, não
-permanência.
-
-A busca de hiperparâmetros é bem mais larga que a das etapas anteriores e
-percorre também o limiar de decisão, sempre na validação.
+A taxa bruta não é comparável entre redes: São Paulo fecha a transição com
+evasão agregada negativa porque reorganizou a rede e há escolas que absorveram
+turmas inteiras de outras. Por isso o alvo é o quartil de maior evasão dentro do
+próprio estado, e escolas que terminaram com mais de uma vez e meia a coorte
+esperada são descartadas.
 """
 from __future__ import annotations
 import csv
@@ -118,7 +108,6 @@ def carregar(p):
 
 
 def marcar_alvo(exemplos,p):
-    """Quartil de maior evasão dentro do próprio estado."""
     limiares={}
     for uf in sorted({e['uf'] for e in exemplos}):
         g=[e for e in exemplos if e['uf']==uf]
@@ -142,7 +131,6 @@ def construir(nome,params):
 
 
 def grade(nome):
-    """Busca bem mais larga que a das etapas anteriores."""
     if nome=='Arvore':
         return [dict(max_depth=d,min_samples_leaf=l,criterion=c,class_weight=w)
                 for d,l,c,w in product([3,5,8,12,None],[5,20,60,150],['gini','entropy'],[None,'balanced'])]
@@ -158,7 +146,6 @@ def grade(nome):
 
 
 def bootstrap_delta(y,pred_a,pred_b,n=2000,seed=SEED):
-    """Intervalo de 95% para a diferença de F1 entre dois classificadores."""
     rng=np.random.default_rng(seed);vals=[]
     for _ in range(n):
         i=rng.integers(0,len(y),size=len(y))

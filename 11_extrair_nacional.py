@@ -1,19 +1,16 @@
 """Etapa 7 — base nacional: todas as escolas estaduais de Ensino Médio do país.
 
 Executar no VS Code: python 11_extrair_nacional.py
-Entradas: os treze ZIPs oficiais em originais/ (rendimento 2021–2025,
-distorção 2021–2024 e Censo Escolar 2021–2024).
+Entradas: os treze ZIPs oficiais em originais/ (rendimento 2021–2025, distorção
+2021–2024 e Censo Escolar 2021–2024).
 
-As etapas 1 a 6 usam só Rondônia, 206 escolas. Os arquivos do INEP são
-nacionais, e o recorte estadual era apenas um filtro: lendo tudo chega-se a
-cerca de 20 mil escolas, quase cem vezes mais. Com isso o projeto passa a poder
-treinar em um conjunto de estados e avaliar em outro, que é a validação cega
-que faltava.
+As etapas 1 a 6 usam só Rondônia, 206 escolas. Os arquivos do INEP são nacionais
+e o recorte estadual era apenas um filtro: lendo tudo chega-se a cerca de vinte
+mil escolas. Com isso o projeto pode treinar em um conjunto de estados e avaliar
+em outro.
 
-Além do que já era extraído, o Censo entrega aqui atributos de estrutura da
-escola: tempo integral, docentes, turmas, infraestrutura e saneamento. O tempo
-integral importa em especial porque escolas de jornada ampliada e militares
-concentram saída de alunos que é transferência, não evasão.
+O Censo entrega aqui atributos de estrutura da escola: tempo integral, docentes,
+turmas, infraestrutura e saneamento.
 """
 from __future__ import annotations
 import csv
@@ -71,7 +68,7 @@ def planilha(path):
 
 
 def linhas_xlsx(conteudo,colunas,p,rotulo):
-    """Varre a planilha inteira, sem parar em nenhuma UF."""
+    # Ao contrário de 01_extrair_inep.py, varre a planilha toda e não para em RO.
     with zipfile.ZipFile(io.BytesIO(conteudo)) as z:
         strings=[]
         with z.open('xl/sharedStrings.xml') as fs:

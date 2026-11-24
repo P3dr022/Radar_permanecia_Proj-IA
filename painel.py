@@ -67,7 +67,7 @@ class Painel:
         print(f"      {_c('concluída em '+_tempo(d)+extra,'cinza')}")
 
     def barra(self,feito,total,rotulo=''):
-        """Barra de progresso reescrita na mesma linha; chame com feito=total no fim."""
+        # Reescreve a mesma linha; chame com feito=total para fechar.
         if total<=0:return
         frac=min(max(feito/total,0.0),1.0)
         largura=28
@@ -87,7 +87,6 @@ class Painel:
             print(linha)
 
     def contador(self,feito,rotulo='',passo=5000):
-        """Progresso quando o total não é conhecido de antemão."""
         if feito%passo and feito!=-1:return
         if feito==-1:
             if COR:sys.stdout.write('\n');self._ultima_linha=0

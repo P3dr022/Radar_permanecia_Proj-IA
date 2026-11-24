@@ -82,9 +82,8 @@ def extrair_ano(year):
 
 
 def soma_serie(r,sufixo):
-    # Nem toda oferta tem todas as variantes: o normal/magistério, por exemplo, não
-    # tem coluna de turma sem série. Coluna ausente conta zero, desde que ao menos
-    # uma das ofertas exista; se nenhuma existir, o ano não traz esse detalhamento.
+    # O normal/magistério não tem coluna de turma sem série: coluna ausente conta
+    # zero, e só quando nenhuma oferta existe é que o ano não traz o detalhamento.
     partes=[];presentes=0
     for pre in PREFIXOS_SERIE:
         v=r.get(pre+sufixo)

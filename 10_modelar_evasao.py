@@ -84,7 +84,6 @@ def carregar():
 
 
 def marcar_alvos(exemplos):
-    """Quartil superior de evasão do próprio ano, mais o corte absoluto de 20%."""
     limiares={}
     for ano in sorted({e['ano_base'] for e in exemplos}):
         g=[e for e in exemplos if e['ano_base']==ano]
@@ -160,7 +159,6 @@ def main():
                 print(f'{grupo:16} {algo:12} F1={m["f1"]:.4f} recall={m["recall"]:.4f} '
                       f'ROC-AUC={m["roc_auc"]:.4f} P@20={m["precisao_top20"]:.4f}')
 
-    # --- Referências sem modelo ---
     referencias={}
     for alvo in ('evasao_alta','evasao_20pc'):
         y=np.array([e[alvo] for e in teste],dtype=int)
@@ -181,7 +179,6 @@ def main():
               f'ROC-AUC={m["roc_auc"]:.4f} P@20={m["precisao_top20"]:.4f}; '
               f'sempre positivo F1={bloco["Sempre_com_evasao_alta"]["f1"]:.4f}')
 
-    # --- O melhor modelo supera a regra simples? ---
     comparacoes=[]
     for alvo in ('evasao_alta','evasao_20pc'):
         y=np.array([e[alvo] for e in teste],dtype=int)

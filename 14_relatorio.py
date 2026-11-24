@@ -4,10 +4,9 @@ Executar no VS Code: python 14_relatorio.py
 Lê o que as etapas anteriores gravaram em resultados/ e monta um arquivo HTML
 único, com os gráficos embutidos, que abre em qualquer navegador sem servidor.
 
-O relatório é deliberadamente conservador: toda métrica aparece ao lado da
-referência que ela precisa superar, e os números estimados aparecem como faixa.
-Um relatório que só mostra o melhor número de cada tabela seria mais bonito e
-induziria a conclusão errada.
+Toda métrica aparece ao lado da referência que precisa superar, e os números
+estimados aparecem como faixa. Mostrar só o melhor número de cada tabela daria
+um relatório mais bonito e uma conclusão errada.
 """
 from __future__ import annotations
 import base64

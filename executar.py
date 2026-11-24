@@ -65,7 +65,6 @@ def cor(t,c):
 
 
 def preparar_ambiente():
-    """Garante que estamos rodando dentro do .venv, com as dependências instaladas."""
     if sys.version_info<MINIMO:
         print(cor(f'Python {MINIMO[0]}.{MINIMO[1]} ou superior é necessário; '
                   f'este é {sys.version.split()[0]}.','vermelho'))
